@@ -2,7 +2,7 @@ Package: BMS
 Type: Package
 Title: Bayesian Model Averaging Library
 Version: 0.3.3
-Date: 2013-11-21
+Date: 2021-11-21
 Author: Martin Feldkircher and Stefan Zeugner
 Maintainer: Stefan Zeugner <bms@zeugner.eu>
 Depends: R (>= 2.5), methods
