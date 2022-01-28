@@ -578,7 +578,13 @@ bms <-function(X.data,burn=1000,iter=NA,nmodel=500,mcmc="bd",g="UIP",mprior="ran
   if (gprior.info$return.g.stats & !(gprior.info$is.constant)) { add.otherstats=gprior.info$shrinkage.moments; collect.otherstats=TRUE } 
   cumsumweights=iter
   null.lik=lprobcalc$just.loglik(ymy=yty,k=0) # calculate Likelihood for NullModel
+  if (K < N-3) {
   
+    mid.lik=lprobcalc$just.loglik(ymy=yty*(1-as.vector(crossprod(crossprod(chol2inv(chol(XtX.big)),Xty.big),Xty.big)/yty)),k=ceiling(K/2)) # calculate Likelihood for max model
+  } else {
+    mid.lik=lprobcalc$just.loglik(ymy=yty*.001,k=ceiling(K/2)) # calculate Likelihood for max model
+  }
+  if (!is.finite(mid.lik)) { mid.lik=sapply(as.list(seq(.1,.9,.1)),function(x) lprobcalc$just.loglik(ymy=yty*x,k=ceiling(K/2)));  mid.lik=max(mid.lik[is.finite(mid.lik)]) }
   #adding up posterior stats has been outsourced to sub-functions for speed reasons
   if (collect.otherstats) {
     addup<-  function() {
@@ -617,14 +623,15 @@ bms <-function(X.data,burn=1000,iter=NA,nmodel=500,mcmc="bd",g="UIP",mprior="ran
   }
   if (is.enum) {
     cumsumweights=0
+    
     if (collect.otherstats) {
       addup<- function() {
-
-      weight=  exp(pmpold+lprobold-null.lik)
+      
+      weight=  exp(pmpold+lprobold-mid.lik)
       inccount <<- inccount + weight*molddraw #PIPs
       msize<<-msize + weight*kold   # average size of models
       cumsumweights<<-cumsumweights+weight #denominator to get at sum of PMPs=1     
-
+      #browser()  
       #for speed reasons, iterative adding with indexing should be done in one stacked vector      
       if (kold!=0) {
         bm[c(position,K+position,2*K+kold,3*K+position)]=weight*c(b1,b2,1,b1>0); bmo <<- bmo+bm
@@ -636,8 +643,8 @@ bms <-function(X.data,burn=1000,iter=NA,nmodel=500,mcmc="bd",g="UIP",mprior="ran
       }
     } else {
       addup <- function() {
-      weight=  exp(pmpold+lprobold-null.lik)
-      
+      weight=  exp(pmpold+lprobold-mid.lik)
+      #browser()  
       inccount <<- inccount + weight*molddraw #PIPs
       msize<<-msize + weight*kold   # average size of models
       cumsumweights<<-cumsumweights+weight #denominator to get at sum of PMPs=1     

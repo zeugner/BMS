@@ -779,7 +779,8 @@
      #   * just.loglik: this just calculates the log likelihood from given terms - as the sampler mostly needs just that
      #   * lprob.all: this calculates the log lik, as well as b1new (E(beta|Y) the expected value (normal-gamma) of coefficients), and b2new (the Expected value of coefficents squared E(beta^2|Y)= Var(beta|Y)+E(beta|Y)^2)
    
-     
+    #function(ymy, k) { gg=N; l1g=log(1+gg); n1=N-1; g2=g0/(1+g0); .5*{-k*l1g - n1*log(1-g2*(1-ymy/yty))} } -n1
+    
      just.loglik=function(ymy,k,...) {
          return(.5*{{n1-k}*l1g-n1*log(g*ymy + yty)})
      },
