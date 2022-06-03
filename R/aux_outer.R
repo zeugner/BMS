@@ -664,7 +664,7 @@ print.bma <- function(x,...) {
 #' character vector.
 #' @author Martin Feldkircher and Stefan Zeugner
 #' @seealso \code{\link{bms}} and \code{\link{c.bma}} for functions creating
-#' bma objects, \code{\link{print.bma}} makes use of \code{summary.bma}.
+#' bma objects, \code{print.bma} makes use of \code{summary.bma}.
 #' 
 #' Check \url{http://bms.zeugner.eu} for additional help.
 #' @keywords utilities
