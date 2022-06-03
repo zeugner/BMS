@@ -28,7 +28,7 @@
 #' arbitrary vector of statistics per model (\code{fixed_vector}).\cr
 #' @author Martin Feldkircher and Stefan Zeugner
 #' @seealso \code{\link{topmod}} to create \code{topmod} objects and a more
-#' detailed description,\cr \code{\link{[.topmod}} for subselections,
+#' detailed description,
 #' \code{\link{is.topmod}} to test for this class
 #' @references \url{http://bms.zeugner.eu}
 #' @keywords classes
