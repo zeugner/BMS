@@ -254,7 +254,7 @@ pmp.bma <- function(bmao, oldstyle=FALSE) {
 #' @return A scalar with (an estimate of) the posterior model probability for
 #' \code{model}
 #' @author Stefan Zeugner
-#' @seealso \code{\link{pmp.bma}} and \code{\link{topmodels.bma}} for similar
+#' @seealso \code{\link{pmp.bma}} for similar
 #' functions
 #' 
 #' Check \url{http://bms.zeugner.eu} for additional help.
@@ -1373,8 +1373,8 @@ if (any(is.na(suppressWarnings(as.integer(idx))))) idx=1:length(tm$lik())
 #' @param x an object of class 'topmod' - see \code{\link{topmod}}
 #' @param \dots additional arguments passed to \code{link{print}}
 #' @return if \code{x} contains more than one model, then the function returns
-#' a 2-column matrix: \item{Row Names}{show the model binaries in hexcode (cf.
-#' \code{\link{topmodels.bma}})} \item{Column 'Marg.Log.Lik'}{shows the
+#' a 2-column matrix: \item{Row Names}{show the model binaries in hexcode 
+#' } \item{Column 'Marg.Log.Lik'}{shows the
 #' marginal log-likelihoods of the models in \code{x}} \item{Column 'MCMC
 #' Freq'}{shows the MCMC frequencies of the models in \code{x}}
 #' 
@@ -3642,7 +3642,7 @@ summary.zlm <- function(object, printout=TRUE, ...) {
 #' @author Stefan Zeugner
 #' @seealso \code{\link{bms}} for creating \code{bma} objects,
 #' \code{\link{zlm}} for creating \code{zlm} objects,
-#' \code{\link{topmodels.bma}} and \code{\link{pmp.bma}} for displaying the
+#' \code{\link{pmp.bma}} for displaying the
 #' topmodels in a \code{bma} object
 #' 
 #' Check \url{http://bms.zeugner.eu} for additional help.
@@ -3908,7 +3908,7 @@ density.zlm <- function(x,reg=NULL,addons="lesz",std.coefs=FALSE,n=300,plot=TRUE
 #' \code{\link{lps.bma}}) -\cr Note that the LPS equals minus the mean of the
 #' logarithmized results from \code{dyf}) } \item{plot((x, predict_index =
 #' NULL, addons = "eslz", realized.y = NULL, addons.lwd = 1.5, ...)}{the same
-#' as \code{\link{plot.pred.density}}} \item{n}{The number of equally spaced
+#' as \code{plot.pred.density}} \item{n}{The number of equally spaced
 #' points for which the density (under \code{densities()} was computed.}
 #' \item{nmodel}{The number of best models predictive densities are based
 #' upon.} \item{call}{the call that created this \code{pred.density} object}
@@ -3916,7 +3916,7 @@ density.zlm <- function(x,reg=NULL,addons="lesz",std.coefs=FALSE,n=300,plot=TRUE
 #' \code{gprior}s, not with any user-defined priors.
 #' @author Martin Feldkircher and Stefan Zeugner
 #' @seealso \code{\link{predict.bma}} for simple point forecasts,
-#' \code{\link{plot.pred.density}} for plotting predictive densities,
+#' \code{plot.pred.density} for plotting predictive densities,
 #' \code{\link{lps.bma}} for calculating the log predictive score
 #' independently, \code{\link{quantile.pred.density}} for extracting quantiles
 #' 
