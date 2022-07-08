@@ -678,7 +678,7 @@ print.bma <- function(x,...) {
 #'   m_ebl=bms(datafls,burn=1000,iter=3000,user.int=FALSE, g="EBL",g.stats=TRUE)
 #'   info.bma(m_ebl)
 #' 
-#' 
+#' @export
 summary.bma <-function(object,...) {
   #just an alias for info.bma
   info.bma(object)
