@@ -1,5 +1,5 @@
 ###########################################
-# This version: adjusted on 2011-05-05    #
+# This version: adjusted on 2022-07-09    #
 ###########################################
 # it includes all the auxiliary functions that should only be called inside as well as OUTSIDE the bms function
 
@@ -54,7 +54,7 @@
 #'   #standard deviations for the fourth- to eight best models
 #'   beta.draws.bma(mm[4:8],TRUE); 
 #' 
-#' 
+#'  @export
 beta.draws.bma <- function(bmao,stdev=FALSE) {
       # constructs a nice matrix of the betas of the best models stored in topmods
       # bmao: bma object
@@ -182,7 +182,7 @@ beta.draws.bma <- function(bmao,stdev=FALSE) {
 #' colSums(pmp.bma(mm))
 #' 
 #' 
-#' 
+#' @export
 pmp.bma <- function(bmao, oldstyle=FALSE) {
      # constructs nice matrix with PMP analytical and PMP MCMC for best models stored in topmods
      # Prob of top "nmodel" models, analytical (after deleting rest of models)'
@@ -292,7 +292,7 @@ pmp.bma <- function(bmao, oldstyle=FALSE) {
 #' pmpmodel(mm,1:5)
 #' 
 #' 
-#' 
+#' @export
 pmpmodel= function(bmao, model=numeric(0), exact=TRUE) {
   #returns the PMP of any model 
   #if model is null, full or contained in topmod, returns the PMP as in pmp.bma 
@@ -507,7 +507,7 @@ info.bma <- function(bmao) {
 #'  predict(mm[1:10], exact=TRUE)
 #'  
 #'  
-#' 
+#' @export
 predict.bma <- function(object, newdata=NULL, exact=FALSE, topmodels=NULL, ...) {
    # does basic fitting in expected values
    # object: a bma object
@@ -594,7 +594,7 @@ predict.bma <- function(object, newdata=NULL, exact=FALSE, topmodels=NULL, ...) 
 #' fullmodel.ssq(mm$X.data)
 #' 
 #' 
-#' 
+#' @export
 fullmodel.ssq <- function(yX.data) {
   # yX.data: a dataframe
   # returns the OLS sums of sqares for yX.data, where the first column is the dependent:
@@ -783,7 +783,7 @@ summary.bma <-function(object,...) {
 #' 
 #' 
 #' 
-#' 
+#' @export
 coef.bma <-function(object,exact = FALSE, order.by.pip = TRUE, include.constant = FALSE,
     incl.possign = TRUE, std.coefs = FALSE, condi.coef = FALSE, ...) {
   #just an alias for estimates.bma
@@ -809,7 +809,7 @@ coef.bma <-function(object,exact = FALSE, order.by.pip = TRUE, include.constant 
 #'  data(datafls)
 #'  mm=bms(datafls,burn=1000, iter=4000)
 #'  is.bma(mm)
-#' 
+#' @export
 is.bma <-function(bmao) {
   #returns true if the class of the object is either bma or a related class
    if (any(is.element(class(bmao),c("bma","bma.fcast","bma.sar","oldbma","bmav0")))) return(TRUE) else return(FALSE)
@@ -864,7 +864,7 @@ is.topmod <-function(tmo) {
 #'   f21hyper(30,10,20,0) #returns one
 #'   
 #'   f21hyper(10,15,20,-0.1) # returns about 0.4872972
-#' 
+#' @export
 f21hyper = function(a,b,c,z) {
   if ((length(a)!=1)|(length(b)!=1)|(length(c)!=1)|(length(z)!=1)) stop("All function arguments need to be scalars")
   if ((a<0)|(b<0)|(c<0)) stop("Arguments a, b, and c need to be non-negative")
@@ -1420,7 +1420,7 @@ if (any(is.na(suppressWarnings(as.integer(idx))))) idx=1:length(tm$lik())
 #' as.vector(mm$topmod[2]$bool_binary())
 #' 
 #' 
-#' 
+#' @export
 print.topmod <- function(x,...) {
 #this function prints the matrix of logliks and MCMC frequencies
 #if topmod contains only one model, more detiled infomration is given
@@ -1580,7 +1580,7 @@ print.topmod <- function(x,...) {
 #'   tm$bool_binary()
 #'   tm$betas()
 #' 
-#' 
+#' @export
 topmod <- function(nbmodels,nmaxregressors=NA,bbeta=FALSE,lengthfixedvec=0,liks=numeric(0),ncounts=numeric(0),modelbinaries=matrix(0,0,0),betas=matrix(0,0,0),betas2=matrix(0,0,0),fixed_vector=matrix(0,0,0)) {
     #user-friendly function to create a 'topmod' object
     #nbmodels: integer, maxmium number of models to be retained
@@ -1990,7 +1990,7 @@ combine_chains <- function(...) {
 #'  #both enum_combi and enum0 have exactly the same results 
 #'  #(one difference: enum_combi has more 'top models' (1500 instead of 500))
 #' 
-#' 
+#' @export
 c.bma <- function(...,recursive=FALSE) {
   #simple wrapper, recursive has no meaning and ist retained for compatibility
   combine_chains(...) 
