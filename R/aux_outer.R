@@ -2069,6 +2069,7 @@ hex2bin<-function(hexcode) {
 #'   hex2bin("b8a")
 #'   bin2hex(hex2bin("b8a"))
 #' 
+#' @export
 bin2hex<-function(binvec) {
     #user-friendly function to convert some logical vector to hexcode character(e.g. c(1,0,1,0) or c(T,F,T,F) to "a")
     if (!is.logical(binvec)) {if (is.numeric(binvec)) {binvec=as.logical(binvec)} else {stop("need to supply a logical vector like c(T,F) or c(1,0)")} }
@@ -2133,7 +2134,7 @@ bin2hex<-function(binvec) {
 #' lines(mm$mprior.info$mp.Kdist)
 #' 
 #' 
-#' 
+#' @export
 plotModelsize<-function(bmao,exact=FALSE,ksubset=NULL,include.legend=TRUE, do.grid=TRUE, ...) { #,lwd=1.5,xaxt="n",col=c("steelblue3","tomato"),main=NULL,cex.main=0.8,xlab="Model Size",ylab=""){
     #plots posterior vs. prior model size distribution
     # bma: bma object
@@ -2352,7 +2353,7 @@ plotModelsize<-function(bmao,exact=FALSE,ksubset=NULL,include.legend=TRUE, do.gr
 #'  #this pip and the EV conform to what is done by the follwing command
 #'  coef(mm,exact=TRUE,condi.coef=TRUE)["Abslat",]
 #' 
-#' 
+#' @export
 density.bma <- function(x,reg=NULL,addons="lemsz",std.coefs=FALSE,n=300,plot=TRUE,hnbsteps=30,addons.lwd=1.5,...) {
 # x: a bma object
 # reg: the covariate to be calculated; can be character or integer
@@ -2711,7 +2712,7 @@ density.bma <- function(x,reg=NULL,addons="lemsz",std.coefs=FALSE,n=300,plot=TRU
 #'  dd=gdensity(mm,plot=FALSE)
 #'  plot(dd) 
 #' 
-#' 
+#' @export
 gdensity <- function(x,n=512,plot=TRUE,addons="zles",addons.lwd=1.5,...) { #main="Posterior Density of the Shrinkage Factor",type="l",xlab="Shrinkage factor",ylab="Density",col="steelblue4"
 # plots posterior density of shrinkage factor for hyper-g bma objects
 # INPUTS:
@@ -2722,7 +2723,7 @@ gdensity <- function(x,n=512,plot=TRUE,addons="zles",addons.lwd=1.5,...) { #main
 #  addons.lwd: linwe width for addons stuff
 #  ... commands pased on to plot.default
 
-  dsgivenykernel <- function(kpazvec,sf,N) {
+	dsgivenykernel <- function(kpazvec,sf,N) {
     #the post. density of the shrinkge factor f(s|Y)*F((N-1)/2,1,(k+a)/2,R2)
     #kpazvec is a vector with two elements: first element is k+a, second is z (the R-squared)
     #sf: a vector of shrinkage values
@@ -2963,6 +2964,7 @@ quantile.coef.density = function(x, probs=seq(.25,.75,.25), names=TRUE, ...) {
 #'  #application to list of densities:
 #'  quantile.density( list(density(rnorm(1000)), density(rnorm(1000))) )
 #' 
+#' @export
 quantile.pred.density = function(x, probs=seq(.25,.75,.25), names=TRUE, ...) {
   #customizing quantile.density to stuff resulting from pred.density
   quout= .quantile.density(x$densities(), probs=probs, names=names, normalize=FALSE)
@@ -3009,7 +3011,7 @@ quantile.pred.density = function(x, probs=seq(.25,.75,.25), names=TRUE, ...) {
 #' #is similar to
 #' matplot(pmp.bma(mm),type="l")
 #' 
-#' 
+#' @export
 plotConv<-function(bmao,include.legend=TRUE,add.grid=TRUE,...){
  #function that compares MCMC and exact PMP's for the models in bmao$topmod
  # bmao: bma object
@@ -3102,7 +3104,7 @@ plotConv<-function(bmao,include.legend=TRUE,add.grid=TRUE,...){
 #' 
 #' 
 #' 
-#' 
+#' @export
 plotComp <-function(...,varNr=NULL,comp="PIP",exact=FALSE,include.legend=TRUE,add.grid=TRUE,do.par=TRUE,cex.xaxis=0.8) { #,main=NULL,type="p",lty=1:5, lwd=1.5, pch=NULL,col=NULL,cex=NULL,bg=NA,xlab="",ylab=NULL){
 # this plot compares results from different bma specifications, for example different W matrices
 # for the SAR bma or if a new computer routine was coded we want to compare results of it with that
@@ -3236,7 +3238,7 @@ plotComp <-function(...,varNr=NULL,comp="PIP",exact=FALSE,include.legend=TRUE,ad
 #' 
 #' plot(mm)
 #' 
-#' 
+#' @export
 plot.bma <-function(x,...) {
    # does a combined plot of plotConv and plotModelsize for bma object bmao
     # bmao: bma object
@@ -3301,7 +3303,7 @@ plot.bma <-function(x,...) {
 #'  #plot best 7 models, with other colors
 #'  image(model[1:7],yprop2pip=TRUE,col=c("black","lightgrey"))
 #'  
-#' 
+#' @export
 image.bma <- function(x,yprop2pip=FALSE,order.by.pip=TRUE,do.par=TRUE,do.grid=TRUE,do.axis=TRUE,cex.axis=1,...) { #,main=NULL,col=c("tomato","blue"),xlab="Cumulative Model Probabilities",ylab=""
  #does a 'grid plot' of bmao's best models (contained in bmao$topmod) 
  #putting the variables' (on the y-axis) coefficent signs per model vs. the post. model probs (x-axis)
@@ -3453,7 +3455,7 @@ image.bma <- function(x,yprop2pip=FALSE,order.by.pip=TRUE,do.par=TRUE,do.grid=TR
 #' summary(foo2)
 #' 
 #' 
-#' 
+#' @export
 zlm <- function(formula, data=NULL, subset=NULL, g="UIP") {
     #does a normal-gamma linear Bayesian model with Zellner's g prior
     #INPUTS:
@@ -3581,7 +3583,7 @@ zlm <- function(formula, data=NULL, subset=NULL, g="UIP") {
 #' sfoo = summary(foo,printout=FALSE)
 #' print(sfoo$E.shrinkage)
 #' 
-#' 
+#' @export
 summary.zlm <- function(object, printout=TRUE, ...) {
     #prints a summary for a zlm object: coefficients, std devs, shinkage stats, marg.lik.
 
@@ -3673,7 +3675,7 @@ summary.zlm <- function(object, printout=TRUE, ...) {
 #' 
 #' 
 #' 
-#' 
+#' @export
 as.zlm <- function(bmao, model=1) {
    #this function extracts a single topmodel from a bma object and converts it to zlm format
    #Inputs:
@@ -3751,7 +3753,7 @@ as.zlm <- function(bmao, model=1) {
 #'  #prediction based on a 'new data point', with 'standard errors'
 #'  predict(mm, newdata=datafls[1,], se.fit=TRUE) 
 #'  
-#' 
+#' @export
 predict.zlm <- function(object, newdata=NULL, se.fit=FALSE, ...) {
    # does basic fitting in expected values, cf. predict.lm
    # object: a zlm object
@@ -3953,7 +3955,7 @@ density.zlm <- function(x,reg=NULL,addons="lesz",std.coefs=FALSE,n=300,plot=TRUE
 #'  lps.bma(pd,c(0,0))
 #'  
 #'  
-#' 
+#' @export
 pred.density <- function(object, newdata=NULL, n=300, hnbsteps=30, ...) {
     
     dtcm=function(x,df,ncp,varp) {
@@ -4401,7 +4403,7 @@ pred.density <- function(object, newdata=NULL, n=300, hnbsteps=30, ...) {
 #'  zz = zlm(datafls)
 #'  lps.bma(zz, realized.y=datafls[,1] , newdata=datafls[,-1])
 #'  
-#' 
+#' @export
 lps.bma <- function(object, realized.y, newdata=NULL) {
   if (!any(class(object) %in% c("pred.density","bma","zlm"))) stop("object must be of class 'pred.density', 'bma' or 'zlm'!")
   if  (any(class(object) %in% c("bma","zlm"))) {
@@ -4527,7 +4529,7 @@ variable.names.bma = function(object, ...) {
 #'  vcov(zz)
 #'  logLik(zz)
 #'  
-#' 
+#' @export
 variable.names.zlm = function(object, ...) {
   #akin to method 'variable.names'
   if (!is(object,"zlm")) stop("argument 'object' needs to be zlm object")
@@ -4605,7 +4607,7 @@ vcov.zlm = function(object, include.const = FALSE, ...) {
 #'  post.pr2(mm) # is equivalent to
 #'  1 - post.var(mm) / ( var(datafls[,1])*(1-1/nrow(datafls)) )
 #'  
-#' 
+#' @export
 post.var= function(object,exact=FALSE) {
   #calculates the expected posterior standard error based on effective Residual sum of squares, for objects of class 'bma', 'zlm', 'lm', ...
   if (!(is.bma(object) | is(object,"lm"))) stop("Required input is an object of class 'bma' or 'lm'/'zlm'.")
