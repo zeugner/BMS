@@ -784,6 +784,8 @@ summary.bma <-function(object,...) {
 #' 
 #' 
 #' @export
+#' @method coef bma
+#' @S3method coef bma
 coef.bma <-function(object,exact = FALSE, order.by.pip = TRUE, include.constant = FALSE,
     incl.possign = TRUE, std.coefs = FALSE, condi.coef = FALSE, ...) {
   #just an alias for estimates.bma
