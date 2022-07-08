@@ -417,7 +417,7 @@
 #'   bms(datafls, mprior.size=7, fixed.reg = c("PrScEnroll", "LifeExp", "GDP60"))
 #'   # Note that mprior.size=7 means prior model size of 3 fixed to 4 'uncertain' regressors
 #'   
-#'   
+#' @export
 bms <-function(X.data,burn=1000,iter=NA,nmodel=500,mcmc="bd",g="UIP",mprior="random",mprior.size=NA,user.int=TRUE,
                 start.value=NA,g.stats=TRUE,logfile=FALSE,logstep=10000,force.full.ols=FALSE, fixed.reg=numeric(0)) {
 #                beta.save=TRUE,exact=NA,int=NA,printRes=NA,ask.set=NA,return.g.stats=NA,theta=NULL,prior.msize=NULL #deprecated function arguments, retained for compatibility with older versions
