@@ -3237,7 +3237,7 @@ plotComp <-function(...,varNr=NULL,comp="PIP",exact=FALSE,include.legend=TRUE,ad
 #' mm=bms(datafls,user.int=FALSE)
 #' 
 #' plot(mm)
-#' 
+#' @importFrom graphics plot
 #' @export
 plot.bma <-function(x,...) {
    # does a combined plot of plotConv and plotModelsize for bma object bmao
