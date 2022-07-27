@@ -1,7 +1,8 @@
 ###############################################################
-Version 0.3.5 (build 2021-01-28)
+Version 0.3.5 (re-build 2022-07-27)
 Maintenance release in order to prepare expansion of package
-Fixes bugs relating to enumeration over datasets with 500+ observations 
+Fixes bugs relating to enumeration over datasets with 500+ observations
+first build Jan 2022, last build Jul 2022, fixxing small issues... 
 
 
 ###############################################################

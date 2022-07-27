@@ -44,7 +44,6 @@ general; for a more general version cf. the package '\code{hypergeo}'
   f21hyper(30,10,20,0) #returns one
   
   f21hyper(10,15,20,-0.1) # returns about 0.4872972
-
 }
 \references{
 Liang F., Paulo R., Molina G., Clyde M., Berger J.(2008):

@@ -44,7 +44,6 @@ dependent variance. \cr \code{deviance.bma}: returns the
  post.pr2(mm) # is equivalent to
  1 - post.var(mm) / ( var(datafls[,1])*(1-1/nrow(datafls)) )
  
-
 }
 \seealso{
 \code{\link{bms}} for creating \code{bma} objects and priors,

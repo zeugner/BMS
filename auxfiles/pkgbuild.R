@@ -1,4 +1,9 @@
-detach("package:BMS");unloadNamespace("BMS");remove.packages('BMS'); devtools::install_github("zeugner/BMS")
+rmpkg=function(pname) { try(detach(paste0("package:",pname)));try(unloadNamespace(pname));try(remove.packages(pname)); }
+rmpkg('BMS')
+
+
+library(devtools)
+setwd("C:/Users/zeugnst/rpackages/BMS/BMS/BMS")
 
 dataFrame=read.table(paste("source2013/auxiliary_files/fls_data.txt",sep=""),header=T)
 remofls=c("Country","pop50","Latitude","Longitude","Port", "OECD")
@@ -7,8 +12,8 @@ ctryiso=c("DZ", "AR", "AU", "AT", "BE", "BO", "BW", "BR", "CM", "CA", "CL", "CO"
 rownames(datafls)=ctryiso
 rm(remofls); rm(dataFrame); rm(ctryiso)
 usethis::use_data(datafls,overwrite = TRUE)
+
 devtools::document()
-
-
-
-#detach("package:BMS");unloadNamespace("BMS");remove.packages('BMS'); devtools::install_github("zeugner/BMS")
+devtools::load_all(export_all = FALSE)
+devtools::install()
+devtools::build()

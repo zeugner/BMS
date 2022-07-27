@@ -64,7 +64,6 @@ plot(postdist$dens,type="l")
 lines(mm$mprior.info$mp.Kdist)
 
 
-
 }
 \seealso{
 See also \code{\link{bms}}, \code{\link{image.bma}},

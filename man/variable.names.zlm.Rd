@@ -38,7 +38,6 @@ respective coefficent prior \cr
  vcov(zz)
  logLik(zz)
  
-
 }
 \seealso{
 \code{\link{zlm}} for creating \code{zlm} objects

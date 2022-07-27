@@ -44,7 +44,7 @@ Note that the elements of \code{beta.draws.bma(bmao)} correspond to
   #standard deviations for the fourth- to eight best models
   beta.draws.bma(mm[4:8],TRUE); 
 
-
+ @export
 }
 \seealso{
 \code{\link{bms}} for creating bms objects, \code{\link{coef.bma}}

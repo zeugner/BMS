@@ -34,7 +34,6 @@ All functions are \code{bma}-functions for the generic methods
  variable.names(bma_enum)[-1] # is equivalent to
  bma_enum$reg.names
  
-
 }
 \seealso{
 \code{\link{bms}} for creating bma objects

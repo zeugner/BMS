@@ -147,7 +147,6 @@ Up to BMS version 0.3.0, \code{density.bma} may only cope with built-in
  #this pip and the EV conform to what is done by the follwing command
  coef(mm,exact=TRUE,condi.coef=TRUE)["Abslat",]
 
-
 }
 \seealso{
 \code{\link{quantile.coef.density}} for extracting quantiles,

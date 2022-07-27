@@ -45,7 +45,6 @@ plotConv(mm)
 #is similar to
 matplot(pmp.bma(mm),type="l")
 
-
 }
 \seealso{
 \code{\link{pmp.bma}} for posterior model probabilites based on the

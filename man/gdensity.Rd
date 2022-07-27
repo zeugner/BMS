@@ -104,7 +104,6 @@ for \code{"m"}, color 8 for \code{"f"}, color 4 for \code{"E"} and
  dd=gdensity(mm,plot=FALSE)
  plot(dd) 
 
-
 }
 \seealso{
 \code{\link{density.bma}} for computing coefficient densities,

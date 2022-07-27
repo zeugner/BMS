@@ -65,7 +65,6 @@ sign, white to non-inclusion.
  #plot best 7 models, with other colors
  image(model[1:7],yprop2pip=TRUE,col=c("black","lightgrey"))
  
-
 }
 \seealso{
 \link{coef.bma} for the coefficients in matrix form, \link{bms} for

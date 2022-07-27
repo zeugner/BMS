@@ -40,7 +40,7 @@ for the response varaible provided in \code{realized.y} (cf.
 \code{\link{lps.bma}}) -\cr Note that the LPS equals minus the mean of the
 logarithmized results from \code{dyf}) } \item{plot((x, predict_index =
 NULL, addons = "eslz", realized.y = NULL, addons.lwd = 1.5, ...)}{the same
-as \code{\link{plot.pred.density}}} \item{n}{The number of equally spaced
+as \code{plot.pred.density}} \item{n}{The number of equally spaced
 points for which the density (under \code{densities()} was computed.}
 \item{nmodel}{The number of best models predictive densities are based
 upon.} \item{call}{the call that created this \code{pred.density} object}
@@ -87,11 +87,10 @@ In BMS version 0.3.0, \code{pred.density} may only cope with built-in
  lps.bma(pd,c(0,0))
  
  
-
 }
 \seealso{
 \code{\link{predict.bma}} for simple point forecasts,
-\code{\link{plot.pred.density}} for plotting predictive densities,
+\code{plot.pred.density} for plotting predictive densities,
 \code{\link{lps.bma}} for calculating the log predictive score
 independently, \code{\link{quantile.pred.density}} for extracting quantiles
 

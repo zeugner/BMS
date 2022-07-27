@@ -62,7 +62,6 @@ be done in steps: cf. example 'enumeration' below.
  #both enum_combi and enum0 have exactly the same results 
  #(one difference: enum_combi has more 'top models' (1500 instead of 500))
 
-
 }
 \seealso{
 \code{\link{bms}} for creating bma objects

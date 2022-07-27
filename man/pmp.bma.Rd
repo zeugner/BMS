@@ -119,7 +119,6 @@ cor(pmp.bma(mm)[,1],pmp.bma(mm)[,2])
 colSums(pmp.bma(mm))
 
 
-
 }
 \seealso{
 \code{\link{plotConv}} for plotting \code{pmp.bma},

@@ -51,7 +51,7 @@ arbitrary vector of statistics per model (\code{fixed_vector}).\cr
 }
 \seealso{
 \code{\link{topmod}} to create \code{topmod} objects and a more
-detailed description,\cr \code{\link{[.topmod}} for subselections,
+detailed description,
 \code{\link{is.topmod}} to test for this class
 }
 \author{

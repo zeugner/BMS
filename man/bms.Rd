@@ -285,7 +285,6 @@ proportional to \eqn{1/\sigma}.
   bms(datafls, mprior.size=7, fixed.reg = c("PrScEnroll", "LifeExp", "GDP60"))
   # Note that mprior.size=7 means prior model size of 3 fixed to 4 'uncertain' regressors
   
-  
 }
 \references{
 Feldkircher, M. and S. Zeugner (2009): Benchmark Priors

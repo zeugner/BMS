@@ -31,8 +31,6 @@ data(datafls)
 mm=bms(datafls,user.int=FALSE)
 
 plot(mm)
-
-
 }
 \seealso{
 \code{\link{plotModelsize}} and \code{\link{plotConv}}
@@ -40,6 +38,6 @@ plot(mm)
 Check \url{http://bms.zeugner.eu} for additional help.
 }
 \author{
-Martin Feldkircher and Stefan Zeugner
+Martin Feldkircher and Stefan Zeugner and Paul
 }
 \keyword{hplot}

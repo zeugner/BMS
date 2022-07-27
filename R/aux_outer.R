@@ -382,6 +382,8 @@ pmpmodel= function(bmao, model=numeric(0), exact=TRUE) {
 }
 
 
+#' @rdname coef.bma
+#' @export
 estimates.bma <- function(bmao,exact=FALSE,order.by.pip=TRUE,include.constant=FALSE,incl.possign=TRUE,std.coefs=FALSE,condi.coef=FALSE) {
    # constructs a nice estimates matrix with 5 columns: 1) PIP, 2) E(beta|Y), 3) Var(beta|Y), 4) pos. coef. sign (cond. on inclusion, optional), 5) Index in X.data
    # bmao: bma object; 
@@ -402,7 +404,8 @@ estimates.bma <- function(bmao,exact=FALSE,order.by.pip=TRUE,include.constant=FA
   return(bmaest)
 }
 
-
+#' @rdname summary.bma
+#' @export
 info.bma <- function(bmao) {
     # constructs an 'info' character matrix with 1 row and the following columns:
     # bmao: bma object
@@ -620,6 +623,7 @@ fullmodel.ssq <- function(yX.data) {
   
 }
 
+#' @export
 print.bma <- function(x,...) {
   #defines how to print a bmao object (e.g. to the console)
   if (!is.bma(x)) {return(print(x))} 
@@ -782,10 +786,8 @@ summary.bma <-function(object,...) {
 #' coef(mm[1:50],exact=TRUE)
 #' 
 #' 
-#' 
-#' @export
 #' @method coef bma
-#' @S3method coef bma
+#' @export
 coef.bma <-function(object,exact = FALSE, order.by.pip = TRUE, include.constant = FALSE,
     incl.possign = TRUE, std.coefs = FALSE, condi.coef = FALSE, ...) {
   #just an alias for estimates.bma
@@ -820,6 +822,7 @@ is.bma <-function(bmao) {
 
 
 
+#' @export
 is.topmod <-function(tmo) {
   #returns true if the class of the object is a "topmod" list
    if (is.element("topmod",class(tmo))) return(TRUE) else return(FALSE)
@@ -948,6 +951,7 @@ f21hyper = function(a,b,c,z) {
   rbind(.post.topmod.includes(topmods,reg.names),t(pmps))
 }
 
+#' @export
 topmodels.bma <-function(bmao)  {# function alias
   if (!is.bma(bmao)) {stop("you need to provide a bma object")}
   return(.post.topmod.bma(bmao))
@@ -1326,6 +1330,7 @@ topmodels.bma <-function(bmao)  {# function alias
 ############################################################
 #auxiliary functions for topmod object
 
+#' @export
 "[.topmod" <- function(tm,idx) {
 # this function (applied as topmod[idx] ) provides a topmodel object with only the models indicated by idx
 # e.g. topmod[1] contains only the best model, topmod[-(90:100)] eliminates the models ranked 90 to 100
@@ -1358,6 +1363,7 @@ if (any(is.na(suppressWarnings(as.integer(idx))))) idx=1:length(tm$lik())
         inivec_vbeta2=bet2,inivec_veck=tm$kvec_raw()[idx],inivec_fixvec=fixvec)
 }
 
+#' @export
 "[.bma" <- function(bmao,idx) {
 # bma[idx] should have the same effect as applying the index to the topmod, for convenience
   bmao$topmod <- bmao$topmod[idx]
@@ -2027,6 +2033,9 @@ c.bma <- function(...,recursive=FALSE) {
     }))
 }
 
+
+#' @rdname bin2hex
+#' @export
 hex2bin<-function(hexcode) {
     #user-friendly function to convert some hexcode character to numeric vector (e.g. "a" to c(1,0,1,0))
     if (!is.character(hexcode)) stop("please input a character like '0af34c'");
@@ -2862,9 +2871,9 @@ gdensity <- function(x,n=512,plot=TRUE,addons="zles",addons.lwd=1.5,...) { #main
 }
 
 
-
-
-.quantile.density = function(x, probs=seq(.25,.75,.25), names=TRUE, normalize=TRUE, ...) {
+#' @rdname quantile.pred.density
+#' @export
+quantile.density = function(x, probs=seq(.25,.75,.25), names=TRUE, normalize=TRUE, ...) {
 # a generic function for objects of class density or lists whose elements are densities
 
   # the actual subfunction for object of class  "density"
@@ -2897,8 +2906,10 @@ gdensity <- function(x,n=512,plot=TRUE,addons="zles",addons.lwd=1.5,...) { #main
 }
 
 
-quantile.density=.quantile.density
+.quantile.density=quantile.density
 
+#' @rdname quantile.pred.density
+#' @export
 quantile.coef.density = function(x, probs=seq(.25,.75,.25), names=TRUE, ...) {
   #customizing quantile.density to stuff resulting from density.bma
  quout= .quantile.density(x, probs=probs, names=names, normalize=TRUE) 
@@ -3237,7 +3248,6 @@ plotComp <-function(...,varNr=NULL,comp="PIP",exact=FALSE,include.legend=TRUE,ad
 #' mm=bms(datafls,user.int=FALSE)
 #' 
 #' plot(mm)
-#' @importFrom graphics plot
 #' @export
 plot.bma <-function(x,...) {
    # does a combined plot of plotConv and plotModelsize for bma object bmao
@@ -3836,7 +3846,7 @@ predict.zlm <- function(object, newdata=NULL, se.fit=FALSE, ...) {
 }
 
 
-
+#' @export
 density.zlm <- function(x,reg=NULL,addons="lesz",std.coefs=FALSE,n=300,plot=TRUE,hnbsteps=30,addons.lwd=1.5,...) {
     #this function does just the same as density.bma, but for an object of class zlm
     #permitted values for addons: e, s, l, z, g
@@ -4413,11 +4423,13 @@ lps.bma <- function(object, realized.y, newdata=NULL) {
   return(object$lps(realized.y))
 }
 
+#' @export
 plot.pred.density <- function(x,  predict_index=NULL, addons="eslz", realized.y=NULL, addons.lwd=1.5, ...) {
     if (!is(x,"pred.density")) stop("x must be of class 'pred.density'!")
     x$plot(predict_index, realized.y=realized.y, addons=addons, addons.lwd=addons.lwd, ...)
 }
 
+#' @export
 print.pred.density <-function(x, digits=NULL, ...) {
      outmat=matrix(numeric(0),length(x$fit),2)
      colnames(outmat)=c("Exp.Val.","Std.Err.")
@@ -4435,6 +4447,7 @@ print.pred.density <-function(x, digits=NULL, ...) {
 # NEW UTILITIES                ######
 #####################################
 
+#' @export
 deviance.bma = function(object, exact=FALSE, ...) {
  #calculates (N-1)*posterior variance of a bma object = effective residual sum of squares
  # also works for objects of class zlm (and in principle for lm)
@@ -4451,10 +4464,13 @@ deviance.bma = function(object, exact=FALSE, ...) {
  ess=as.vector(crossprod(ebeta,as.vector(crossprod(xx[,-1,drop=FALSE],xx[,1]))))
  return((as.vector(crossprod(xx[,1,drop=TRUE]))-ess))
 }
+
+
+#' @export
 deviance.zlm=function(object, ...) deviance.bma(object)
 
 
-
+#' @export
 model.frame.bma = function(formula, ...) { 
   #akin to method 'model.frame'
   if (!is.bma(formula)) stop("argument 'formula' needs to be a bma object")
@@ -4490,7 +4506,7 @@ model.frame.bma = function(formula, ...) {
 #'  variable.names(bma_enum)[-1] # is equivalent to
 #'  bma_enum$reg.names
 #'  
-#' 
+#' @export
 variable.names.bma = function(object, ...) {
   #akin to method 'variable.names'
   if (!is.bma(object)) stop("argument 'object' needs to be a bma object")
@@ -4536,6 +4552,7 @@ variable.names.zlm = function(object, ...) {
   return(names(object$coefficients))
 }
 
+#' @export
 logLik.zlm = function(object,...) {
   #marginal likelihood of a 'zlm' model, akin to method 'logLik'
   if (!is(object,"zlm")) stop("argument 'formula' needs to be zlm object")
@@ -4547,7 +4564,7 @@ logLik.zlm = function(object,...) {
 }
 
 
-
+#' @export
 vcov.zlm = function(object, include.const = FALSE, ...) {
   #akin to vcov.lm
   
@@ -4618,6 +4635,7 @@ post.var= function(object,exact=FALSE) {
   return(ret)
 }
 
+#' @export
 post.pr2= function(object,exact=FALSE) {
   #calculates a pseudo-R-squared based on effective Residual sum of squares, for objects of class 'bma', 'zlm', 'lm', ...
   if (!(is.bma(object) | is(object,"lm"))) stop("Required input is an object of class 'bma' or 'lm'/'zlm'.")
