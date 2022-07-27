@@ -54,7 +54,7 @@
 #'   #standard deviations for the fourth- to eight best models
 #'   beta.draws.bma(mm[4:8],TRUE); 
 #' 
-#'  @export
+#' @export
 beta.draws.bma <- function(bmao,stdev=FALSE) {
       # constructs a nice matrix of the betas of the best models stored in topmods
       # bmao: bma object
@@ -2732,7 +2732,7 @@ gdensity <- function(x,n=512,plot=TRUE,addons="zles",addons.lwd=1.5,...) { #main
 #  addons.lwd: linwe width for addons stuff
 #  ... commands pased on to plot.default
 
-	dsgivenykernel <- function(kpazvec,sf,N) {
+  dsgivenykernel <- function(kpazvec,sf,N) {
     #the post. density of the shrinkge factor f(s|Y)*F((N-1)/2,1,(k+a)/2,R2)
     #kpazvec is a vector with two elements: first element is k+a, second is z (the R-squared)
     #sf: a vector of shrinkage values
@@ -4182,9 +4182,9 @@ pred.density <- function(object, newdata=NULL, n=300, hnbsteps=30, ...) {
        if (densities_calculated) return(NULL)
        for (xf.index in 1:rnew) {
           if (!any(is.na(newX[xf.index,]))) {
-	
+ 
 
-	  #assign("xf_index",xf.index,envir=env) # IS THIS NECESSARY?
+ #assign("xf_index",xf.index,envir=env) # IS THIS NECESSARY?
           #xf_index <<- xf.index
           lbound=Eyf[[xf.index]]-sqrt(Varyf[[xf.index]])*4; ubound=Eyf[[xf.index]]+sqrt(Varyf[[xf.index]])*4
           seqs=seq(lbound,ubound,(ubound-lbound)/(n-1))
@@ -4342,7 +4342,7 @@ pred.density <- function(object, newdata=NULL, n=300, hnbsteps=30, ...) {
             }
             if (!is.null(realized.y)) realized.y <- consistent.yf(realized.y,predict_index);
             
-	    calc_alldens()
+      calc_alldens()
 	    #temp=reslist$densities()
             oldask = par()$ask
             plotnb=0
