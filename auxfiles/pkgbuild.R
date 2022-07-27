@@ -13,7 +13,9 @@ rownames(datafls)=ctryiso
 rm(remofls); rm(dataFrame); rm(ctryiso)
 usethis::use_data(datafls,overwrite = TRUE)
 
+
 devtools::document()
 devtools::load_all(export_all = FALSE)
+devtools::document()
 devtools::install()
 devtools::build()
