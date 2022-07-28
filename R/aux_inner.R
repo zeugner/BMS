@@ -653,12 +653,11 @@
     
     postad.reg.names <- function(X.data) {
       # extracts the column names of covariates or constructs ones: X.data is data.frame
-      if(is.null(colnames(X.data)[-1]) || colnames(X.data)[-1]==""){
-         reg.names<-paste("beta",1:K)
-      }
-      else{
-         reg.names=colnames(X.data)[-1]
-      }
+      xdcn=colnames(X.data)
+      if(is.null(xdcn)) {xdcn<- rep("",NCOL(X.data))}
+      if(anyNA(xdcn)) {xdcn[is.na(xdcn)]<- rep("",NCOL(X.data))[is.na(xdcn)]}
+      if(any(trimws(xdcn)=='')) {xdcn[trimws(xdcn)=='']<-paste0("Vbl",0:K)[trimws(xdcn)==''] }
+      reg.names=xdcn[-1]
       return(reg.names)
     }
 
