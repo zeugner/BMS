@@ -2,7 +2,7 @@
 Version 0.3.5 (re-build 2022-08-03)
 Maintenance release in order to prepare expansion of package
 First build Jan 2022, last build Aug 2022, fixing small issues...
-License changed from artistic to LGPL3
+License changed from artistic to BSD3
 Co-author added: Paul Hofmarcher, maintainer email changed.
 Source coude released at github: github.com/zeugner/BMS, no with roxygen documentation
 Fixed numerical tolerance bugs relating to enumeration over datasets with 1000+ observations
