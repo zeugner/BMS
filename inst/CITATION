@@ -1,0 +1,14 @@
+citHeader("To cite package BMS in scientific work use:")
+
+citEntry(entry="Article",
+  title="Bayesian Model Averaging Employing Fixed and Flexible Priors: The BMS Package for R",
+  author=personList(as.person("Martin Feldkircher"),
+                    as.person("Stefan Zeugner")),
+  journal="Journal of Statistical Software",
+  year="2015",
+  volume="68",
+  textVersion="Feldkircher, M. and S. Zeugner (2015): Bayesian Model Averaging Employing Fixed and Flexible Priors: The BMS Package for R, Journal of Statistical Software 68(4)."
+  )
+
+
+citFooter("In case of coding etc. please incorporate a reference to the website <http://bms.zeugner.eu> in a visible manner (e.g. the source code)")
