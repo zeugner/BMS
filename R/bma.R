@@ -350,14 +350,20 @@
 #' Moreover, the (improper) prior on the constant \eqn{f(\alpha)} is put
 #' proportional to 1. Similarly, the variance prior \eqn{f(\sigma)} is
 #' proportional to \eqn{1/\sigma}.
-#' @author Martin Feldkircher and Stefan Zeugner
+#' @author Martin Feldkircher, Paul Hofmarcher, and Stefan Zeugner
 #' @seealso \code{\link{coef.bma}}, \code{\link{plotModelsize}} and
 #' \code{\link{density.bma}} for some operations on the resulting 'bma' object,
 #' \code{\link{c.bma}} for integrating separate MC3 chains and splitting of
 #' sampling over several runs.
 #' 
 #' Check \url{http://bms.zeugner.eu} for additional help.
-#' @references Feldkircher, M. and S. Zeugner (2009): Benchmark Priors
+#' @references 
+#' \url{http://bms.zeugner.eu}: BMS package homepage with help and tutorials
+#' 
+#' Feldkircher, M. and S. Zeugner (2015): Bayesian Model Averaging Employing 
+#' Fixed and Flexible Priors: The BMS Package for R, Journal of Statistical Software 68(4).
+#' 
+#' Feldkircher, M. and S. Zeugner (2009): Benchmark Priors
 #' Revisited: On Adaptive Shrinkage and the Supermodel Effect in Bayesian Model
 #' Averaging, IMF Working Paper 09/202.
 #' 
@@ -754,7 +760,7 @@ while(i<nrep) {
         
         #Now decide whether to accept candidate draw
         
-        accept.candi = as.logical(log(runif(1,0,1))< lprobnew-lprobold + pmpnew-pmpold)
+        accept.candi = as.logical(log(stats::runif(1,0,1))< lprobnew-lprobold + pmpnew-pmpold)
 
       } else {
         accept.candi=TRUE
@@ -816,7 +822,8 @@ while(i<nrep) {
   bmo=matrix(bmo,4,byrow=TRUE); b1mo=bmo[1,]; b2mo=bmo[2,]; k.vec=bmo[3,]; possign=bmo[4,]; rm(bmo)
   post.inf=.post.calc(gprior.info,add.otherstats,k.vec,null.count,X.data,topmods,b1mo,b2mo,iter,burn,inccount,models.visited,K,N,msize,timed,cumsumweights,mcmc,possign)
   
-  result=list(info=post.inf$info,arguments=.construct.arglist(bms, environment()),topmod=topmods,start.pos=sort(start.position),gprior.info=post.inf$gprior.info,mprior.info=pmplist,X.data=X.data,reg.names=post.inf$reg.names,bms.call=try(match.call(bms,sys.call(0)),silent=TRUE))
+  result=list(info=post.inf$info,arguments=.construct.arglist(bms, environment()),topmod=topmods,start.pos=sort(start.position),gprior.info=post.inf$gprior.info,mprior.info=pmplist,reg.names=post.inf$reg.names,bms.call=try(match.call(bms,sys.call(0)),silent=TRUE))
+  if (!is.null(result$X.data)) { result$X.data<-NULL }
   class(result)=c("bma")
   
   
