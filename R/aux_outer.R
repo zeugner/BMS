@@ -15,6 +15,11 @@
 
 
 
+
+ 
+
+
+
 #' Coefficients of the Best Models
 #' 
 #' Returns a matrix whose columns are the (expected value or standard
@@ -34,8 +39,7 @@
 #' 
 #' For aggregate coefficients please refer to \code{\link{coef.bma}}.
 #' @note Note that the elements of \code{beta.draws.bma(bmao)} correspond to
-#' \code{bmao$topmood$betas()}
-#' @author Martin Feldkircher and Stefan Zeugner
+#' \code{bmao$topmod$betas()}
 #' @seealso \code{\link{bms}} for creating bms objects, \code{\link{coef.bma}}
 #' for aggregate coefficients
 #' 
@@ -54,7 +58,7 @@
 #'   #standard deviations for the fourth- to eight best models
 #'   beta.draws.bma(mm[4:8],TRUE); 
 #' 
-#'  @export
+#' @export
 beta.draws.bma <- function(bmao,stdev=FALSE) {
       # constructs a nice matrix of the betas of the best models stored in topmods
       # bmao: bma object
@@ -119,7 +123,7 @@ beta.draws.bma <- function(bmao,stdev=FALSE) {
 #' CAUTION: In package versions up to \code{BMS 0.2.5}, the first column was
 #' indeed set always equal to one. This behaviour can still be mimicked by
 #' setting \code{oldstyle=TRUE}.
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso \code{\link{plotConv}} for plotting \code{pmp.bma},
 #' \code{\link{pmpmodel}} to obtain the PMP for any individual model,
 #' \code{\link{bms}} for sampling bma objects
@@ -196,7 +200,7 @@ pmp.bma <- function(bmao, oldstyle=FALSE) {
        log.null.lik=0
      } else {
        topmods=bmao$topmod 
-       log.null.lik=(1-bmao$info$N)/2*log(as.vector(crossprod(bmao$X.data[,1]-mean(bmao$X.data[,1]))))
+       log.null.lik=(1-bmao$info$N)/2*log(as.vector(crossprod(bmao$arguments$X.data[,1]-mean(bmao$arguments$X.data[,1]))))
        cumsumweights=bmao$info$cumsumweights
        was.enum=(bmao$arguments$mcmc=="enum")       
      }
@@ -253,7 +257,6 @@ pmp.bma <- function(bmao, oldstyle=FALSE) {
 #' in \code{\link{bms}}, then \code{exact} does not matter.
 #' @return A scalar with (an estimate of) the posterior model probability for
 #' \code{model}
-#' @author Stefan Zeugner
 #' @seealso \code{\link{pmp.bma}} for similar
 #' functions
 #' 
@@ -336,7 +339,7 @@ pmpmodel= function(bmao, model=numeric(0), exact=TRUE) {
   liks=bmao$topmod$lik()
   ncounts=bmao$topmod$ncount()
   cumsumweights=bmao$info$cumsumweights
-  yty=as.vector(crossprod(bmao$X.data[,1,drop=TRUE]-mean(bmao$X.data[,1,drop=TRUE])))
+  yty=as.vector(crossprod(bmao$arguments$X.data[,1,drop=TRUE]-mean(bmao$arguments$X.data[,1,drop=TRUE])))
   log.null.lik= bmao$gprior.info$lprobcalc$just.loglik(ymy=yty,k=0)
   
   
@@ -365,7 +368,7 @@ pmpmodel= function(bmao, model=numeric(0), exact=TRUE) {
     if (sum(model)==0L) {
       loglik= log.null.lik + bmao$mprior.info$pmp(ki=0, mdraw=rep(0,K), ymy=yty)
     } else {
-      zz=zlm(bmao$X.data[,c(TRUE,model),drop=FALSE], g=bmao$gprior.info)
+      zz=zlm(bmao$arguments$X.data[,c(TRUE,model),drop=FALSE], g=bmao$gprior.info)
       loglik=zz$marg.lik+bmao$mprior.info$pmp(ki=sum(model), mdraw=as.numeric(model), ymy=zz$olsres$ymy)
     }
   }
@@ -382,6 +385,8 @@ pmpmodel= function(bmao, model=numeric(0), exact=TRUE) {
 }
 
 
+#' @rdname coef.bma
+#' @export
 estimates.bma <- function(bmao,exact=FALSE,order.by.pip=TRUE,include.constant=FALSE,incl.possign=TRUE,std.coefs=FALSE,condi.coef=FALSE) {
    # constructs a nice estimates matrix with 5 columns: 1) PIP, 2) E(beta|Y), 3) Var(beta|Y), 4) pos. coef. sign (cond. on inclusion, optional), 5) Index in X.data
    # bmao: bma object; 
@@ -398,11 +403,12 @@ estimates.bma <- function(bmao,exact=FALSE,order.by.pip=TRUE,include.constant=FA
    #if (bmao$arguments$beta.save==FALSE) stop("exact=TRUE needs betas from the draws: Run estimation again and save betas via setting beta.save=TRUE")
    if (bmao$topmod$nbmodels==0) stop("exact=TRUE needs at least one 'top model': Run estimation again and set nmodel>0")
   }
-  bmaest=.post.estimates(bmao$info$b1mo,bmao$info$b2mo,bmao$info$cumsumweights,bmao$info$inccount,bmao$topmod,bmao$X.data,bmao$reg.names,bmao$info$pos.sign,exact,order.by.pip,include.constant,incl.possign,std.coefs,condi.coef)
+  bmaest=.post.estimates(bmao$info$b1mo,bmao$info$b2mo,bmao$info$cumsumweights,bmao$info$inccount,bmao$topmod,bmao$arguments$X.data,bmao$reg.names,bmao$info$pos.sign,exact,order.by.pip,include.constant,incl.possign,std.coefs,condi.coef)
   return(bmaest)
 }
 
-
+#' @rdname summary.bma
+#' @export
 info.bma <- function(bmao) {
     # constructs an 'info' character matrix with 1 row and the following columns:
     # bmao: bma object
@@ -483,7 +489,6 @@ info.bma <- function(bmao) {
 #' models.\cr Note that setting \code{topmodels} triggers \code{exact=TRUE}.
 #' @param \dots further arguments passed to or from other methods.
 #' @return A vector with (expected values of) fitted values.
-#' @author Martin Feldkircher and Stefan Zeugner
 #' @seealso \code{\link{coef.bma}} for obtaining coefficients,
 #' \code{\link{bms}} for creating bma objects, \code{\link{predict.lm}} for a
 #' comparable function
@@ -534,7 +539,7 @@ predict.bma <- function(object, newdata=NULL, exact=FALSE, topmodels=NULL, ...) 
 
     #check the newdata argument
     if (is.null(newdata)) {
-       newX<-as.matrix(object$X.data[,-1, drop=FALSE])
+       newX<-as.matrix(object$arguments$X.data[,-1, drop=FALSE])
     } else {
        newX=as.matrix(newdata)
        if (!is.numeric(newX)) stop("newdata must be numeric!")
@@ -546,7 +551,7 @@ predict.bma <- function(object, newdata=NULL, exact=FALSE, topmodels=NULL, ...) 
            stop("newdata must be a matrix or data.frame with", length(betas), "columns.")
          }
        }
-       orinames=colnames(object$X.data[,-1, drop=FALSE])
+       orinames=colnames(object$arguments$X.data[,-1, drop=FALSE])
        if (!is.null(colnames(newX))&& !is.null(orinames)) { #this is a user check whether columns had been submitted in the wrong  order
         if (all(orinames %in% colnames(newX) ) && !all(orinames == colnames(newX))  ) {
             warning("argument newdata had to be reordered according to its column names. Consider submitting the columns of newdata in the right order.")
@@ -555,7 +560,7 @@ predict.bma <- function(object, newdata=NULL, exact=FALSE, topmodels=NULL, ...) 
        }
        
     }
-    cons=.post.constant(object$X.data,betas)
+    cons=.post.constant(object$arguments$X.data,betas)
     return(as.vector(newX%*%betas)+cons)
 }
 
@@ -577,7 +582,6 @@ predict.bma <- function(object, newdata=NULL, exact=FALSE, topmodels=NULL, ...) 
 #' \item{Fstat}{The F-statistic of the full model}
 #' @note This function is just for quick comparison; for proper OLS estimation
 #' consider \code{\link{lm}}
-#' @author Martin Feldkircher and Stefan Zeugner
 #' @seealso \code{\link{bms}} for creating bma objects, \code{\link{lm}} for
 #' OLS estimation
 #' 
@@ -591,7 +595,7 @@ predict.bma <- function(object, newdata=NULL, exact=FALSE, topmodels=NULL, ...) 
 #' fullmodel.ssq(mm)
 #' 
 #' #equivalent:
-#' fullmodel.ssq(mm$X.data)
+#' fullmodel.ssq(datafls)
 #' 
 #' 
 #' @export
@@ -600,7 +604,7 @@ fullmodel.ssq <- function(yX.data) {
   # returns the OLS sums of sqares for yX.data, where the first column is the dependent:
   # R2: r-squared; ymy: resid SS; ypy: explained SS; yty: (y-ymean)'(y-ymean)
 
-  if (is.bma(yX.data)) {yX.data <- yX.data$X.data}
+  if (is.bma(yX.data)) {yX.data <- yX.data$arguments$X.data}
   y<-as.matrix(yX.data[,1])
   X<-as.matrix(yX.data[,2:ncol(yX.data)])
   N<-nrow(X)
@@ -620,6 +624,7 @@ fullmodel.ssq <- function(yX.data) {
   
 }
 
+#' @export
 print.bma <- function(x,...) {
   #defines how to print a bmao object (e.g. to the console)
   if (!is.bma(x)) {return(print(x))} 
@@ -662,7 +667,6 @@ print.bma <- function(x,...) {
 #' @note All of the above statistics can also be directly extracted from the
 #' bma object (\code{bmao}). Therefore \code{summary.bma} only returns a
 #' character vector.
-#' @author Martin Feldkircher and Stefan Zeugner
 #' @seealso \code{\link{bms}} and \code{\link{c.bma}} for functions creating
 #' bma objects, \code{print.bma} makes use of \code{summary.bma}.
 #' 
@@ -749,7 +753,7 @@ summary.bma <-function(object,...) {
 #' all visited models in case \code{exact=FALSE}, over the best models in case
 #' \code{exact=TRUE})} \item{Column 'Idx'}{the original order of covariates as
 #' the were used for sampling. (if included, the constant has index 0)}
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso \code{\link{bms}} for creating bma objects, \code{\link{pmp.bma}}
 #' for comparing MCMC frequencies and marginal likelihoods.
 #' 
@@ -782,10 +786,8 @@ summary.bma <-function(object,...) {
 #' coef(mm[1:50],exact=TRUE)
 #' 
 #' 
-#' 
-#' @export
 #' @method coef bma
-#' @S3method coef bma
+#' @export
 coef.bma <-function(object,exact = FALSE, order.by.pip = TRUE, include.constant = FALSE,
     incl.possign = TRUE, std.coefs = FALSE, condi.coef = FALSE, ...) {
   #just an alias for estimates.bma
@@ -801,7 +803,7 @@ coef.bma <-function(object,exact = FALSE, order.by.pip = TRUE, include.constant 
 #' @param bmao a 'bma' object: see 'value'
 #' @return Returns \code{TRUE} if bmao is of class 'bma', \code{FALSE}
 #' otherwise.
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso 'Output' in \code{\link{bms}} for the structure of a 'bma' object
 #' 
 #' Check \url{http://bms.zeugner.eu} for additional help.
@@ -820,6 +822,7 @@ is.bma <-function(bmao) {
 
 
 
+#' @export
 is.topmod <-function(tmo) {
   #returns true if the class of the object is a "topmod" list
    if (is.element("topmod",class(tmo))) return(TRUE) else return(FALSE)
@@ -834,7 +837,7 @@ is.topmod <-function(tmo) {
 #' 
 #' The function \code{f21hyper} complements the analysis of the 'hyper-g prior'
 #' introduced by Liang et al. (2008).\cr For parameter values, compare cf.
-#' \url{http://en.wikipedia.org/wiki/Hypergeometric_function#The_series_2F1}.
+#' \url{https://en.wikipedia.org/wiki/Hypergeometric_function}.
 #' 
 #' @param a The parameter \code{a} of the Gaussian hypergeometric function,
 #' must be a positive scalar here
@@ -848,7 +851,7 @@ is.topmod <-function(tmo) {
 #' @note This function is a simple wrapper function of sped-up code that is
 #' intended for sporadic application by the user; it is neither efficient nor
 #' general; for a more general version cf. the package '\code{hypergeo}'
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso package \code{hypergeo} for a more proficient implementation.
 #' 
 #' Check \url{http://bms.zeugner.eu} for additional help.
@@ -856,7 +859,7 @@ is.topmod <-function(tmo) {
 #' Mixtures of g-priors for Bayesian variable selection. J. Am. Statist. Assoc.
 #' 103, p. 410-423
 #' 
-#' \url{http://en.wikipedia.org/wiki/Hypergeometric_function#The_series_2F1}
+#' \url{https://en.wikipedia.org/wiki/Hypergeometric_function}
 #' @keywords utilities
 #' @examples
 #' 
@@ -948,6 +951,51 @@ f21hyper = function(a,b,c,z) {
   rbind(.post.topmod.includes(topmods,reg.names),t(pmps))
 }
 
+
+
+
+#' Model Binaries and their Posterior model Probabilities
+#' 
+#' Returns a matrix whose columns show which covariates were included in the best models in a 'bma' object. The last two columns detail posterior model probabilities. 
+#' 
+#' @param bmao an object of class 'bma' - see \code{\link{bma-class}}
+#' @return Each column in the resulting matrix corresponds to one of the 'best' models in bmao: the first column for the best model, the second for the second-best model, etc.
+#' The model binaries have elements 1 if the regressor given by the row name was included in the respective models, and 0 otherwise.
+#' The second-last row shows the model's posterior model probability based on marginal likelihoods (i.e. its marginal likelihood over the sum of likelihoods of all best models)
+#' The last row shows the model's posterior model probability based on MCMC frequencies (i.e. how often the model was accepted vs sum of acceptance of all models) 
+#' Note that the column names are hexcode representations of the model binaries (e.g. "03" for c(0,0,0,1,0,0)) 
+#' 
+#' 
+#' @details
+#' Each bma class (the result of bms) contains 'top models', the x models with tthe best 
+#' analytical likelihood  that bms had encountered while sampling
+#' 
+#' See \code{\link{pmp.bma}} for an explanation of likelihood vs. MCMC
+#' frequency concepts
+#' 
+#' 
+#' 
+#' @seealso \code{\link{topmod}} for creating topmod objects, \code{\link{bms}}
+#' for their typical use, \code{\link{pmp.bma}} for comparing posterior model
+#' probabilities
+#' 
+#' Check \url{http://bms.zeugner.eu} for additional help.
+#' @examples
+#' 
+#' data(datafls)
+#' #sample with a limited data set for demonstration
+#' mm=bms(datafls[,1:12],nmodel=20)
+#' 
+#' #show binaries for all
+#' topmodels.bma(mm)
+#' 
+#' #show binaries for 2nd and 3rd best model, without the model probs
+#' topmodels.bma(mm[2:3])[1:11,]
+#' 
+#' #access model binaries directly
+#' mm$topmod$bool_binary()
+#'  
+#' @export
 topmodels.bma <-function(bmao)  {# function alias
   if (!is.bma(bmao)) {stop("you need to provide a bma object")}
   return(.post.topmod.bma(bmao))
@@ -1326,6 +1374,7 @@ topmodels.bma <-function(bmao)  {# function alias
 ############################################################
 #auxiliary functions for topmod object
 
+#' @export
 "[.topmod" <- function(tm,idx) {
 # this function (applied as topmod[idx] ) provides a topmodel object with only the models indicated by idx
 # e.g. topmod[1] contains only the best model, topmod[-(90:100)] eliminates the models ranked 90 to 100
@@ -1358,6 +1407,7 @@ if (any(is.na(suppressWarnings(as.integer(idx))))) idx=1:length(tm$lik())
         inivec_vbeta2=bet2,inivec_veck=tm$kvec_raw()[idx],inivec_fixvec=fixvec)
 }
 
+#' @export
 "[.bma" <- function(bmao,idx) {
 # bma[idx] should have the same effect as applying the index to the topmod, for convenience
   bmao$topmod <- bmao$topmod[idx]
@@ -1390,7 +1440,7 @@ if (any(is.na(suppressWarnings(as.integer(idx))))) idx=1:length(tm$lik())
 #' in the topmod object - cf. argument \code{bbeta} in \code{\link{topmod}}) }
 #' \item{Included Covariates}{the model binary} \item{Additional
 #' Statistics}{any custom additional statistics saved with the model}
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso \code{\link{topmod}} for creating topmod objects, \code{\link{bms}}
 #' for their typical use, \code{\link{pmp.bma}} for comparing posterior model
 #' probabilities
@@ -1508,8 +1558,6 @@ print.topmod <- function(x,...) {
 #' @param fixed_vector optional matrix whose columns are a fixed vector
 #' initialize topmod object with (same \code{ncol} as \code{modelbinaries}) -
 #' see example below
-#' @param tmo A 'topmod' object, as e.g. created by topmod, or as element of
-#' the result of \code{\link{bms}}
 #' @return a call to \code{topmod} returns a list of class "topmod" with the
 #' following elements:
 #' \item{addmodel(mylik,vec01,vbeta=numeric(0),vbeta2=numeric(0),fixedvec=numeric(0))}{function
@@ -1539,7 +1587,7 @@ print.topmod <- function(x,...) {
 #' Note: if \code{lengthfixedvec=0} this returns an empty matrix}
 #' @note \code{topmod} is rather intended as a building block for programming;
 #' it has no direct application for a user of the BMS package.
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso the object resulting from \code{\link{bms}} includes an element of
 #' class 'topmod'
 #' 
@@ -1583,7 +1631,9 @@ print.topmod <- function(x,...) {
 #'   tm$betas()
 #' 
 #' @export
-topmod <- function(nbmodels,nmaxregressors=NA,bbeta=FALSE,lengthfixedvec=0,liks=numeric(0),ncounts=numeric(0),modelbinaries=matrix(0,0,0),betas=matrix(0,0,0),betas2=matrix(0,0,0),fixed_vector=matrix(0,0,0)) {
+topmod <- function(nbmodels,nmaxregressors=NA,bbeta=FALSE,lengthfixedvec=0,liks=numeric(0),
+                   ncounts=numeric(0),modelbinaries=matrix(0,0,0),betas=matrix(0,0,0),
+                   betas2=matrix(0,0,0),fixed_vector=matrix(0,0,0)) {
     #user-friendly function to create a 'topmod' object
     #nbmodels: integer, maxmium number of models to be retained
     #nmaxregressors: integer, maximum possible number of covariates (optional if arguments modelbinaries or betas are provided)
@@ -1697,7 +1747,7 @@ topmod <- function(nbmodels,nmaxregressors=NA,bbeta=FALSE,lengthfixedvec=0,liks=
          #in case tm is a bma object...
          is.bmao=TRUE
          bmao=tm;
-         yXdata=bmao$X.data; 
+         yXdata=bmao$arguments$X.data; 
          gprior.info=bmao$gprior.info; 
          tm =bmao$topmod 
        }
@@ -1876,7 +1926,7 @@ combine_chains <- function(...) {
     # use post.calc to compute info, gprior.info, and reg.names
     io1=flso1$info; io2 = flso2$info
     obj.combi=.post.calc(gprior.info=gpi,add.otherstats=io1$add.otherstats + io2$add.otherstats,k.vec=(io1$k.vec[-1]+io2$k.vec[-1]),null.count=(io1$k.vec[1]+io2$k.vec[1]),
-       flso1$X.data,topmods=topmod.combi,b1mo=io1$b1mo + io2$b1mo,b2mo=io1$b2mo + io2$b2mo,iter=io1$iter + io2$iter,burn=io1$burn + io2$burn,
+       flso1$arguments$X.data,topmods=topmod.combi,b1mo=io1$b1mo + io2$b1mo,b2mo=io1$b2mo + io2$b2mo,iter=io1$iter + io2$iter,burn=io1$burn + io2$burn,
        inccount=io1$inccount + io2$inccount,models.visited=io1$models.visited + io2$models.visited,K=io1$K,N=io1$N,msize=io1$msize + io2$msize,
        timed=io1$timed + io2$timed,cumsumweights=io1$cumsumweights + io2$cumsumweights,mcmc=flso1$arguments$mcmc,possign=io1$pos.sign+io2$pos.sign)
     
@@ -1952,7 +2002,7 @@ combine_chains <- function(...) {
 #' @aliases combine_chains c.bma
 #' @param \dots At least two 'bma' objects (cf. \code{\link{bms}})
 #' @param recursive retained for compatibility with \code{\link{c}} method
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso \code{\link{bms}} for creating bma objects
 #' 
 #' Check \url{http://bms.zeugner.eu} for additional help.
@@ -2027,6 +2077,9 @@ c.bma <- function(...,recursive=FALSE) {
     }))
 }
 
+
+#' @rdname bin2hex
+#' @export
 hex2bin<-function(hexcode) {
     #user-friendly function to convert some hexcode character to numeric vector (e.g. "a" to c(1,0,1,0))
     if (!is.character(hexcode)) stop("please input a character like '0af34c'");
@@ -2056,7 +2109,7 @@ hex2bin<-function(hexcode) {
 #' (admissible character: 0 to 9, ato f)
 #' @return \code{bin2hex} returns a single element character; \code{hex2bin}
 #' returns a numeric vector equivalent to a logical vector
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso \code{\link{hex2bin}} for converting hexcode into binary vectors,
 #' \code{\link{format.hexmode}} for a related R function.
 #' 
@@ -2109,7 +2162,7 @@ bin2hex<-function(binvec) {
 #' variance of the posterior model size distribution} \item{dens}{A vector
 #' detailing the posterior model size distribution from model size \eqn{0} (the
 #' first element) to \eqn{K} (the last element)}
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso See also \code{\link{bms}}, \code{\link{image.bma}},
 #' \code{\link{density.bma}}, \code{\link{plotConv}}
 #' 
@@ -2189,7 +2242,7 @@ plotModelsize<-function(bmao,exact=FALSE,ksubset=NULL,include.legend=TRUE, do.gr
             }
           prior=exp(beta.bin(a=1,b=(K-m)/m,K=K,w=0:K))
        }
-       if(theta!="random"){ prior=dbinom(x=0:K,size=K,prob=m/K,log=FALSE)}
+       if(theta!="random"){ prior=stats::dbinom(x=0:K,size=K,prob=m/K,log=FALSE)}
     } else {
       prior = rep(NA,length(kvec)) 
     }
@@ -2208,21 +2261,21 @@ plotModelsize<-function(bmao,exact=FALSE,ksubset=NULL,include.legend=TRUE, do.gr
         #        main=ifelse(is.null(main),paste("Posterior Model Size Distribution","\n","Mean:",
         #        round(modelSmean,4)),main),cex.main=cex.main,xlab=xlab,
         #        ylim=c(0,1.1*upper.ylim),lwd=lwd,ylab=ylab,...)
-        if (as.logical(do.grid)) grid()
-        points(kvec[ksubset+1],cex=0.8,pch=eval(dotargs$pch))
+        if (as.logical(do.grid)) graphics::grid()
+        graphics::points(kvec[ksubset+1],cex=0.8,pch=eval(dotargs$pch))
         
         #if(lower==0){
-        #    axis(1, las=1, at =1:length(lower:upper), label = c(0:K)[lower:(upper+1)],cex.axis=0.7)
+        #    graphics::axis(1, las=1, at =1:length(lower:upper), label = c(0:K)[lower:(upper+1)],cex.axis=0.7)
         #}
         #else{
         #    axis(1, las=1, at =1:length(lower:upper), label = c(0:K)[lower:upper],cex.axis=0.7)
         #}
-        axis(1, las=1, at =1:length(ksubset), labels = ksubset, cex.axis=eval(dotargs$cex.axis))
+        graphics::axis(1, las=1, at =1:length(ksubset), labels = ksubset, cex.axis=eval(dotargs$cex.axis))
         if (include.legend) {
           if (is.null(prior)||all(is.na(prior))) {
-            legend(x="topright",lty=eval(dotargs$lty),legend=c("Posterior"),col=eval(dotargs$col),ncol=1,bty="n",lwd=eval(dotargs$lwd))
+            graphics::legend(x="topright",lty=eval(dotargs$lty),legend=c("Posterior"),col=eval(dotargs$col),ncol=1,bty="n",lwd=eval(dotargs$lwd))
           } else {
-            legend(x="topright",lty=eval(dotargs$lty),legend=c("Posterior","Prior"),col=eval(dotargs$col),ncol=2,bty="n",lwd=eval(dotargs$lwd))
+            graphics::legend(x="topright",lty=eval(dotargs$lty),legend=c("Posterior","Prior"),col=eval(dotargs$col),ncol=2,bty="n",lwd=eval(dotargs$lwd))
           }
         }
    return(invisible(list(mean=modelSmean,var=modelS.var,dens=kvec)))
@@ -2316,7 +2369,7 @@ plotModelsize<-function(bmao,exact=FALSE,ksubset=NULL,include.legend=TRUE, do.gr
 #' 
 #' Up to BMS version 0.3.0, \code{density.bma} may only cope with built-in
 #' \code{gprior}s, not with any user-defined priors.
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso \code{\link{quantile.coef.density}} for extracting quantiles,
 #' \code{\link{coef.bma}} for similar concepts, \code{\link{bms}} for creating
 #' bma objects
@@ -2376,7 +2429,7 @@ density.bma <- function(x,reg=NULL,addons="lemsz",std.coefs=FALSE,n=300,plot=TRU
      #a wrapper for univariate t-dist with non-centrality parameter and variance parameter 
      # (variance is df/(df-2)*varp)
      sqvarp=sqrt(varp)
-     dt((x-ncp)/sqvarp,df=df)/sqvarp
+     stats::dt((x-ncp)/sqvarp,df=df)/sqvarp
   }
 
   dsgivenykernel <- function(sf,kpa,N,z) {
@@ -2408,7 +2461,7 @@ density.bma <- function(x,reg=NULL,addons="lemsz",std.coefs=FALSE,n=300,plot=TRU
            
     if (std.coefs) {
       #if standardized coefficients are wanted, then adjust moments accordingly
-      sddata=apply(as.matrix(bmao$X.data),2,stats::sd)
+      sddata=apply(as.matrix(bmao$arguments$X.data),2,stats::sd)
       betas=diag(sddata[-1])%*%betas/sddata[1]
       betas2=diag(sddata[-1]^2)%*%betas2/sddata[1]^2
     }
@@ -2431,7 +2484,7 @@ density.bma <- function(x,reg=NULL,addons="lemsz",std.coefs=FALSE,n=300,plot=TRU
       Eb1.mcmc = bmao$info$b1mo/bmao$info$inccount
       Ebsd.mcmc = sqrt(bmao$info$b2mo/bmao$info$inccount-Eb1.mcmc^2)
       if (std.coefs) {
-         sddata=apply(as.matrix(bmao$X.data),2,stats::sd)
+         sddata=apply(as.matrix(bmao$arguments$X.data),2,stats::sd)
          Eb1.mcmc=Eb1.mcmc*sddata[-1]/sddata[1];
          Ebsd.mcmc=Ebsd.mcmc*sddata[-1]/sddata[1];
       }      
@@ -2441,7 +2494,7 @@ density.bma <- function(x,reg=NULL,addons="lemsz",std.coefs=FALSE,n=300,plot=TRU
     if (ishyper) {
        #in case of hyper-g, we cannot rely on sigmadiag, but have to numerically integrate over
        #differnt shrinkages, for that we need this
-       yXdata=as.matrix(bmao$X.data); yXdata=yXdata-matrix(colMeans(yXdata),N,K+1,byrow=TRUE)
+       yXdata=as.matrix(bmao$arguments$X.data); yXdata=yXdata-matrix(colMeans(yXdata),N,K+1,byrow=TRUE)
        if (std.coefs) yXdata=yXdata%*%diag(1/sddata)
        yty=c(crossprod(yXdata[,1]))
        positions=lapply(lapply(as.list(as.data.frame(bools)),as.logical),which)
@@ -2510,10 +2563,10 @@ density.bma <- function(x,reg=NULL,addons="lemsz",std.coefs=FALSE,n=300,plot=TRU
      main_default=paste("Marginal Density:",names(nameix)[ix],"(PIP",round(c(crossprod(pmps,bools[ix,]))*100,2),"%)")
      if (any(grep("p",addons,ignore.case=TRUE))) { 
         decr=.12; 
-        parplt=par()$plt; 
-        parplt_temp=parplt; parplt_temp[4]=(1-decr)*parplt[4] +decr*parplt[3]; par(plt=parplt_temp)
+        parplt=graphics::par()$plt; 
+        parplt_temp=parplt; parplt_temp[4]=(1-decr)*parplt[4] +decr*parplt[3]; graphics::par(plt=parplt_temp)
         main_temp=main_default; main_default=NULL
-#         layout(1:2,heights=c(.1,1))
+#         graphics::layout(1:2,heights=c(.1,1))
 #         opm=par()$mar
 #         par(mar=c(0,opm[2],1,opm[4]))
 #         plot(0,type="n",xlim=0:1,ylim=0:1,xaxt="n",yaxt="n",bty="n",xlab="",ylab="")
@@ -2538,7 +2591,7 @@ density.bma <- function(x,reg=NULL,addons="lemsz",std.coefs=FALSE,n=300,plot=TRU
     leg.col=numeric(0);leg.lty=numeric(0); leg.legend=character(0)
     
     if (any(grep("g",addons,ignore.case=TRUE))) { # grid
-       grid()
+       graphics::grid()
     }
 
     if (any(grep("b",addons,ignore.case=TRUE))) { # post exp values of the individual models
@@ -2546,71 +2599,71 @@ density.bma <- function(x,reg=NULL,addons="lemsz",std.coefs=FALSE,n=300,plot=TRU
          Ebm=betas[ix,m] ;
          if (as.logical(Ebm)) {
            Ebheight=min(densvec[max(sum(seqs<Ebm),1)],densvec[sum(seqs<Ebm)+1])
-           lines(x=rep(Ebm,2),y=c(0,Ebheight),col=8)
+           graphics::lines(x=rep(Ebm,2),y=c(0,Ebheight),col=8)
          }
       }
       leg.col=c(leg.col,8);leg.lty=c(leg.lty,1);leg.legend=c(leg.legend,"EV Models")
     }
 
     if (any(grep("e",addons,ignore.case=FALSE))) {  # posterior mean
-       abline(v=Eball[ix,1],col=2,lwd=addons.lwd)
+       graphics::abline(v=Eball[ix,1],col=2,lwd=addons.lwd)
        leg.col=c(leg.col,2);leg.lty=c(leg.lty,1); leg.legend=c(leg.legend,"Cond. EV")
     }
     if (any(grep("s",addons,ignore.case=FALSE))) { # posterior SD bounds
-       abline(v=Eball[ix,1]-2*Eball[ix,2],col=2,lty=2,lwd=addons.lwd)
-       abline(v=Eball[ix,1]+2*Eball[ix,2],col=2,lty=2,lwd=addons.lwd)    
+       graphics::abline(v=Eball[ix,1]-2*Eball[ix,2],col=2,lty=2,lwd=addons.lwd)
+       graphics::abline(v=Eball[ix,1]+2*Eball[ix,2],col=2,lty=2,lwd=addons.lwd)    
        leg.col=c(leg.col,2);leg.lty=c(leg.lty,2);leg.legend=c(leg.legend,"2x Cond. SD")       
     }
     if (any(grep("m",addons,ignore.case=TRUE))) { # posterior median
        median_index=sum(cumsum(densvec)<sum(densvec)/2)
-       abline(v=(seqs[median_index]+seqs[median_index+1])/2,col=3,lwd=addons.lwd)
+       graphics::abline(v=(seqs[median_index]+seqs[median_index+1])/2,col=3,lwd=addons.lwd)
        leg.col=c(leg.col,3);leg.lty=c(leg.lty,1);leg.legend=c(leg.legend,"Median")       
     }
     
     if (any(grep("z",addons,ignore.case=TRUE))) { #zero line
-       abline(h=0,col="gray",lwd=addons.lwd)
+      graphics::abline(h=0,col="gray",lwd=addons.lwd)
     }
     
     if (any(grep("E",addons,ignore.case=FALSE))) { #post exp value of MCMC results (see estimates.bma(,exact=F)
-       abline(v=Eb1.mcmc[ix],col=4,lwd=addons.lwd)
+      graphics::abline(v=Eb1.mcmc[ix],col=4,lwd=addons.lwd)
        leg.col=c(leg.col,4);leg.lty=c(leg.lty,1); leg.legend=c(leg.legend,"Cond. EV (MCMC)")
     }
     if (any(grep("S",addons,ignore.case=FALSE))) { #2 times post SD of MCMC results (see estimates.bma(,exact=F)
-       abline(v=Eb1.mcmc[ix]-2*Ebsd.mcmc[ix],col=4,lty=2,lwd=addons.lwd)
-       abline(v=Eb1.mcmc[ix]+2*Ebsd.mcmc[ix],col=4,lty=2,lwd=addons.lwd)       
+      graphics::abline(v=Eb1.mcmc[ix]-2*Ebsd.mcmc[ix],col=4,lty=2,lwd=addons.lwd)
+      graphics::abline(v=Eb1.mcmc[ix]+2*Ebsd.mcmc[ix],col=4,lty=2,lwd=addons.lwd)       
        leg.col=c(leg.col,4);leg.lty=c(leg.lty,2); leg.legend=c(leg.legend,"2x SD (MCMC)")
     }
     
     
     if (any(grep("l",addons,ignore.case=TRUE))&(length(leg.col)>0)) { #legend
       leg.pos="topright"; if (Eball[ix,1]>seqs[floor(n/2)]) leg.pos="topleft"; 
-      legend(x=leg.pos,lty=leg.lty,col=leg.col,legend=leg.legend,box.lwd=0,bty="n",lwd=addons.lwd)
+      graphics::legend(x=leg.pos,lty=leg.lty,col=leg.col,legend=leg.legend,box.lwd=0,bty="n",lwd=addons.lwd)
     }
     
     if (any(grep("p",addons,ignore.case=TRUE))) { 
-      pusr=par()$usr
-      rect(pusr[1],pusr[4]*(1+decr*.2), pusr[2], pusr[4]*(1+decr),xpd=TRUE,col=8)
-      rect(pusr[1],pusr[4]*(1+decr*.2), pips[ix]*pusr[2]+(1-pips[ix])*pusr[1], pusr[4]*(1+decr),xpd=TRUE,col=9)
-      mtext("PIP:",side=2, las=2,line=1, at=pusr[4]*(1+decr*.6))
-      par(plt=parplt)
-      title(main_temp)
+      pusr=graphics::par()$usr
+      graphics::rect(pusr[1],pusr[4]*(1+decr*.2), pusr[2], pusr[4]*(1+decr),xpd=TRUE,col=8)
+      graphics::rect(pusr[1],pusr[4]*(1+decr*.2), pips[ix]*pusr[2]+(1-pips[ix])*pusr[1], pusr[4]*(1+decr),xpd=TRUE,col=9)
+      graphics::mtext("PIP:",side=2, las=2,line=1, at=pusr[4]*(1+decr*.6))
+      graphics::par(plt=parplt)
+      graphics::title(main_temp)
     }
     return(reslist)
   }
   
   
   densres=list()
-  oldask=par()$ask
+  oldask=graphics::par()$ask
   plots=0
   for (vbl in 1:length(reg)) {
     doplot=(if (as.logical(pips[reg[vbl]])) plot else FALSE)
     plots=plots+doplot
-    if (plots==2) {par(ask=TRUE)}
+    if (plots==2) {graphics::par(ask=TRUE)}
     densres[[nameix[vbl]]]=plotndens(reg[vbl],doplot)
     densres[[nameix[vbl]]]$call=sys.call()   #call("density.bma",bmao=bmao,reg=reg,n=300,hnbsteps=30)
   }
   
-  par(ask=oldask)
+  graphics::par(ask=oldask)
   if (length(densres)==1) densres=densres[[1]] else class(densres) = c("coef.density",class(densres))
   if (!plot) return(densres)
   if (plot&(plots==0)) {warning("No plot produced as PIPs of provided variables are zero under 'exact' estimation.")}
@@ -2683,7 +2736,7 @@ density.bma <- function(x,reg=NULL,addons="lemsz",std.coefs=FALSE,n=300,plot=TRU
 #' for \code{"m"}, color 8 for \code{"f"}, color 4 for \code{"E"} and
 #' \code{"S"}. The default colors may be changed by a call to
 #' \code{\link{palette}}.
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso \code{\link{density.bma}} for computing coefficient densities,
 #' \code{\link{bms}} for creating bma objects, \code{\link{density}} for the
 #' general method
@@ -2723,7 +2776,7 @@ gdensity <- function(x,n=512,plot=TRUE,addons="zles",addons.lwd=1.5,...) { #main
 #  addons.lwd: linwe width for addons stuff
 #  ... commands pased on to plot.default
 
-	dsgivenykernel <- function(kpazvec,sf,N) {
+  dsgivenykernel <- function(kpazvec,sf,N) {
     #the post. density of the shrinkge factor f(s|Y)*F((N-1)/2,1,(k+a)/2,R2)
     #kpazvec is a vector with two elements: first element is k+a, second is z (the R-squared)
     #sf: a vector of shrinkage values
@@ -2749,7 +2802,7 @@ gdensity <- function(x,n=512,plot=TRUE,addons="zles",addons.lwd=1.5,...) { #main
 
 
     #re-compute the R-squareds and other stuff for the topmodels
-       yXdata=as.matrix(x$X.data); yXdata=yXdata-matrix(colMeans(yXdata),N,K+1,byrow=TRUE)
+       yXdata=as.matrix(x$arguments$X.data); yXdata=yXdata-matrix(colMeans(yXdata),N,K+1,byrow=TRUE)
        yty=c(crossprod(yXdata[,1]))
        positions=lapply(lapply(as.list(as.data.frame(bools)),as.logical),which) #vector of who is in where
        ymyvec=unlist(lapply(lapply(positions,.ols.terms2,yty=yty,N=N,K=K,XtX.big=crossprod(yXdata[,-1]),Xty.big=c(crossprod(yXdata[,-1],yXdata[,1]))),function (x) x$full.results()$ymy)) # vector of SSResid
@@ -2805,7 +2858,7 @@ gdensity <- function(x,n=512,plot=TRUE,addons="zles",addons.lwd=1.5,...) { #main
          if (as.logical(Esm)) {
            ixlower=max(sum(s.seq<Esm),1)
            Esheight=(sdens[ixlower+1]-sdens[ixlower])*(Esm-s.seq[ixlower])+sdens[ixlower]
-           lines(x=rep(Esm,2),y=c(0,Esheight),col=8,lwd=addons.lwd)
+           graphics::lines(x=rep(Esm,2),y=c(0,Esheight),col=8,lwd=addons.lwd)
          }
       }
       leg.col=c(leg.col,8);leg.lty=c(leg.lty,1);leg.legend=c(leg.legend,"EV Models")
@@ -2814,37 +2867,37 @@ gdensity <- function(x,n=512,plot=TRUE,addons="zles",addons.lwd=1.5,...) { #main
 
 
     if (any(grep("e",addons,ignore.case=FALSE))) {  # posterior mean
-       abline(v=Es,col=2,lwd=addons.lwd)
+      graphics::abline(v=Es,col=2,lwd=addons.lwd)
        leg.col=c(leg.col,2);leg.lty=c(leg.lty,1); leg.legend=c(leg.legend,"EV")
     }
     if (any(grep("s",addons,ignore.case=FALSE))) { # posterior SD bounds
-       if (!(Es-2*Esd)<0) abline(v=Es-2*Esd,col=2,lty=2,lwd=addons.lwd)
-       if (!(Es+2*Esd)>1) abline(v=Es+2*Esd,col=2,lty=2,lwd=addons.lwd)
+       if (!(Es-2*Esd)<0) graphics::abline(v=Es-2*Esd,col=2,lty=2,lwd=addons.lwd)
+       if (!(Es+2*Esd)>1) graphics::abline(v=Es+2*Esd,col=2,lty=2,lwd=addons.lwd)
        leg.col=c(leg.col,2);leg.lty=c(leg.lty,2);leg.legend=c(leg.legend,"2x SD")
     }
     if (any(grep("m",addons,ignore.case=TRUE))) { # posterior median
        median_index=sum(cumsum(sdens)<sum(sdens)/2)
-       abline(v=(s.seq[median_index]+s.seq[median_index+1])/2,col=3,lwd=addons.lwd)
+       graphics::abline(v=(s.seq[median_index]+s.seq[median_index+1])/2,col=3,lwd=addons.lwd)
        leg.col=c(leg.col,3);leg.lty=c(leg.lty,1);leg.legend=c(leg.legend,"Median")
     }
 
     if (any(grep("z",addons,ignore.case=TRUE))) { #zero line
-       abline(h=0,col="gray",lwd=addons.lwd)
+      graphics::abline(h=0,col="gray",lwd=addons.lwd)
     }
 
 
 
     if (any(grep("E",addons,ignore.case=FALSE))) { #post exp value of MCMC results (see estimates.bma(,exact=F)
        if (all(x$gprior.info$shrinkage.moments==0)) warning("bma object needs to contain posterior g statistics - cf. argument 'g.stats' in 'help(bms)'") else {
-          abline(v=x$gprior.info$shrinkage.moments[1],col=4,lwd=addons.lwd)
+         graphics::abline(v=x$gprior.info$shrinkage.moments[1],col=4,lwd=addons.lwd)
           leg.col=c(leg.col,4);leg.lty=c(leg.lty,1); leg.legend=c(leg.legend,"EV (MCMC)")
        }
     }
     if (any(grep("S",addons,ignore.case=FALSE))) { #2 times post SD of MCMC results (see estimates.bma(,exact=F)
       if (!all(x$gprior.info$shrinkage.moments==0)) {
          ES=x$gprior.info$shrinkage.moments[1]; SDs=sqrt(x$gprior.info$shrinkage.moments[2]-x$gprior.info$shrinkage.moments[1]^2)
-         if (ES-2*SDs>0) abline(v=ES-2*SDs,col=4,lty=2,lwd=addons.lwd)
-         if (ES+2*SDs<1) abline(v=ES+2*SDs,col=4,lty=2,lwd=addons.lwd)
+         if (ES-2*SDs>0) graphics::abline(v=ES-2*SDs,col=4,lty=2,lwd=addons.lwd)
+         if (ES+2*SDs<1) graphics::abline(v=ES+2*SDs,col=4,lty=2,lwd=addons.lwd)
          leg.col=c(leg.col,4);leg.lty=c(leg.lty,2); leg.legend=c(leg.legend,"2x SD (MCMC)")
        }
     }
@@ -2852,7 +2905,7 @@ gdensity <- function(x,n=512,plot=TRUE,addons="zles",addons.lwd=1.5,...) { #main
 
     if (any(grep("l",addons,ignore.case=TRUE))&(length(leg.col)>0)) { #legend
       leg.pos="topleft";
-      legend(x=leg.pos,lty=leg.lty,col=leg.col,legend=leg.legend,box.lwd=0,bty="n")
+      graphics::legend(x=leg.pos,lty=leg.lty,col=leg.col,legend=leg.legend,box.lwd=0,bty="n")
     }
 
 
@@ -2862,9 +2915,9 @@ gdensity <- function(x,n=512,plot=TRUE,addons="zles",addons.lwd=1.5,...) { #main
 }
 
 
-
-
-.quantile.density = function(x, probs=seq(.25,.75,.25), names=TRUE, normalize=TRUE, ...) {
+#' @rdname quantile.pred.density
+#' @export
+quantile.density = function(x, probs=seq(.25,.75,.25), names=TRUE, normalize=TRUE, ...) {
 # a generic function for objects of class density or lists whose elements are densities
 
   # the actual subfunction for object of class  "density"
@@ -2897,8 +2950,10 @@ gdensity <- function(x,n=512,plot=TRUE,addons="zles",addons.lwd=1.5,...) { #main
 }
 
 
-quantile.density=.quantile.density
+.quantile.density=quantile.density
 
+#' @rdname quantile.pred.density
+#' @export
 quantile.coef.density = function(x, probs=seq(.25,.75,.25), names=TRUE, ...) {
   #customizing quantile.density to stuff resulting from density.bma
  quout= .quantile.density(x, probs=probs, names=names, normalize=TRUE) 
@@ -2961,8 +3016,10 @@ quantile.coef.density = function(x, probs=seq(.25,.75,.25), names=TRUE, ...) {
 #'  dd1 = density(rnorm(1000))
 #'  quantile(dd1)
 #'  
+#'\dontrun{
 #'  #application to list of densities:
 #'  quantile.density( list(density(rnorm(1000)), density(rnorm(1000))) )
+#' }
 #' 
 #' @export
 quantile.pred.density = function(x, probs=seq(.25,.75,.25), names=TRUE, ...) {
@@ -2994,7 +3051,7 @@ quantile.pred.density = function(x, probs=seq(.25,.75,.25), names=TRUE, ...) {
 #' @param add.grid whether to include a \code{\link{grid}} in the plot
 #' @param \dots other parameters for \code{\link{matplot}}
 #' @note \code{plotConv} is also used by \code{\link{plot.bma}}
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso \code{\link{pmp.bma}} for posterior model probabilites based on the
 #' two concepts, \code{\link{bms}} for creating objects of class 'bma'
 #' 
@@ -3028,15 +3085,15 @@ plotConv<-function(bmao,include.legend=TRUE,add.grid=TRUE,...){
     stop("plotConv needs at least one model stored in topmod in order to produce a plot")
   }
   cor.pmp=format(round(.cor.topmod(bmao$topmod),4),nsmall=4)
-  dotargs = match.call(plot,expand.dots=FALSE)$...
+  dotargs = match.call(graphics::plot,expand.dots=FALSE)$...
   dotargs=.adjustdots(dotargs, lwd=2,main=paste("Posterior Model Probabilities\n(Corr: ",cor.pmp,")",sep=""),lty=1,col=c("steelblue3","tomato"),cex.main=0.8,xlab="Index of Models",ylab="",type="l")
   eval(as.call(c(list(as.name("matplot"),as.name("mat")),as.list(dotargs))))
 
     
 #   if (is.null(main)) main=paste("Posterior Model Probabilities\n(Corr: ",cor.pmp,")",sep="")
 #  matplot(mat,type="l",lty=lty,col=col,lwd=lwd,main=main,xlab=xlab,cex.main=cex.main,ylab=ylab,...)
-  if (as.logical(add.grid)) grid()
-  if (as.logical(include.legend)) legend("topright",lty=eval(dotargs$lty),legend=c("PMP (MCMC)", "PMP (Exact)"),col=eval(dotargs$col),ncol=2,bty="n",cex=1,lwd=eval(dotargs$lwd));
+  if (as.logical(add.grid)) graphics::grid()
+  if (as.logical(include.legend)) graphics::legend("topright",lty=eval(dotargs$lty),legend=c("PMP (MCMC)", "PMP (Exact)"),col=eval(dotargs$col),ncol=2,bty="n",cex=1,lwd=eval(dotargs$lwd));
 }
 
 
@@ -3075,7 +3132,7 @@ plotConv<-function(bmao,include.legend=TRUE,add.grid=TRUE,...){
 #' tick labels on the x-axis
 #' @param cex.xaxis font size scaling parameter for the x-axis - cf. argument
 #' \code{cex.axis} in \code{\link{par}}
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso \code{\link{coef.bma}} for the underlying function
 #' 
 #' Check \url{http://bms.zeugner.eu} for additional help.
@@ -3188,10 +3245,10 @@ plotComp <-function(...,varNr=NULL,comp="PIP",exact=FALSE,include.legend=TRUE,ad
   
   # do the plot ####################
   if (as.logical(do.par)) {
-    oldmar=par()$mar
-    spaceforxaxis=strwidth(rownames(compMatrix)[which.max(nchar(rownames(compMatrix)))],units="inches", cex=cex.xaxis)*(par("mar")/par("mai"))[[2]]
-    tempmar=oldmar; tempmar[1]=min(max(oldmar[1],spaceforxaxis+oldmar[1]/3), .5*par("fin")[[2]]*(par("mar")/par("mai"))[[1]])
-    par(mar=tempmar)
+    oldmar=graphics::par()$mar
+    spaceforxaxis=graphics::strwidth(rownames(compMatrix)[which.max(nchar(rownames(compMatrix)))],units="inches", cex=cex.xaxis)*(graphics::par("mar")/graphics::par("mai"))[[2]]
+    tempmar=oldmar; tempmar[1]=min(max(oldmar[1],spaceforxaxis+oldmar[1]/3), .5*graphics::par("fin")[[2]]*(graphics::par("mar")/graphics::par("mai"))[[1]])
+    graphics::par(mar=tempmar)
   }
   
 
@@ -3201,12 +3258,12 @@ plotComp <-function(...,varNr=NULL,comp="PIP",exact=FALSE,include.legend=TRUE,ad
   if (as.logical(include.legend)) {
     extractfromdotargs=function(...) { dal=list(...); return(list(col=dal$col,pch=dal$pch)) }
     myargs=eval(as.call(c(list(as.name("extractfromdotargs")),as.list(dotargs))))
-    legend("topright", colnames(compMatrix),pch=myargs$pch,col=myargs$col,bty="n")
+    graphics::legend("topright", colnames(compMatrix),pch=myargs$pch,col=myargs$col,bty="n")
   }
-  if (as.logical(add.grid)) grid()
-  axis(1, las=2, at = 1:nrow(compMatrix), labels = rownames(compMatrix),cex.axis=cex.xaxis)
-  #layout(matrix(1))
-  if (as.logical(do.par)) par(mar=oldmar)
+  if (as.logical(add.grid)) graphics::grid()
+  graphics::axis(1, las=2, at = 1:nrow(compMatrix), labels = rownames(compMatrix),cex.axis=cex.xaxis)
+  #graphics::layout(matrix(1))
+  if (as.logical(do.par)) graphics::par(mar=oldmar)
 }
 
 
@@ -3226,7 +3283,7 @@ plotComp <-function(...,varNr=NULL,comp="PIP",exact=FALSE,include.legend=TRUE,ad
 #' @note The upper plot shows the prior and posterior distribution of model
 #' sizes (\code{\link{plotModelsize}}).\cr The lower plot is an indicator of
 #' how well the bma object has converged (\code{\link{plotConv}}).
-#' @author Martin Feldkircher and Stefan Zeugner and Paul
+#'  and Paul
 #' @seealso \code{\link{plotModelsize}} and \code{\link{plotConv}}
 #' 
 #' Check \url{http://bms.zeugner.eu} for additional help.
@@ -3237,7 +3294,6 @@ plotComp <-function(...,varNr=NULL,comp="PIP",exact=FALSE,include.legend=TRUE,ad
 #' mm=bms(datafls,user.int=FALSE)
 #' 
 #' plot(mm)
-#' @importFrom graphics plot
 #' @export
 plot.bma <-function(x,...) {
    # does a combined plot of plotConv and plotModelsize for bma object bmao
@@ -3248,10 +3304,10 @@ plot.bma <-function(x,...) {
     if (x$arguments$nmodel<3) {
       try(plotModelsize(x,...),silent=TRUE)
     } else {
-     layout(matrix(1:2,2,1))
+     graphics::layout(matrix(1:2,2,1))
      try(plotModelsize(x,...),silent=TRUE)
      try(plotConv(x,...),silent=TRUE)
-     layout(1)
+     graphics::layout(1)
     }
 }
 
@@ -3284,7 +3340,7 @@ plot.bma <-function(x,...) {
 #' @param cex.axis font size for the axes (cf. \code{\link{axis}}), defaults to
 #' 1
 #' @param \dots Parameters to be passed on to \code{\link{image.default}}.
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso \link{coef.bma} for the coefficients in matrix form, \link{bms} for
 #' creating 'bma' objects.
 #' 
@@ -3322,7 +3378,7 @@ image.bma <- function(x,yprop2pip=FALSE,order.by.pip=TRUE,do.par=TRUE,do.grid=TR
   idx=ests[,"Idx"]
   pmp.res=pmp.bma(x,oldstyle=TRUE)
   pmps=pmp.res[,1]
-  normali_factor=sum(pmp.res[,2])
+  normali_factor=pmin(sum(pmp.res[,2]),1) #this mnormali_factor business only matters for MCMCl, not for iteration
   betasigns=beta.draws.bma(x)[idx,,drop=FALSE]
   betasigns=betasigns[as.logical(pips),]
   betasigns=sign(betasigns)/2+.5
@@ -3337,11 +3393,11 @@ image.bma <- function(x,yprop2pip=FALSE,order.by.pip=TRUE,do.par=TRUE,do.grid=TR
   pmpbounds=(c(0,cumsum(pmps)))  
 
   if (do.par) {
-    oldmar=par()$mar    
-    spaceforyaxis=strwidth(names(pipbounds)[which.max(nchar(names(pipbounds)))],units="inches")*(par("mar")/par("mai"))[[2]]
-    tempmar=oldmar; tempmar[2]=min(spaceforyaxis+oldmar[2]/2, .5*par("fin")[[1]]*(par("mar")/par("mai"))[[2]])
+    oldmar=graphics::par()$mar    
+    spaceforyaxis=graphics::strwidth(names(pipbounds)[which.max(nchar(names(pipbounds)))],units="inches")*(graphics::par("mar")/graphics::par("mai"))[[2]]
+    tempmar=oldmar; tempmar[2]=min(spaceforyaxis+oldmar[2]/2, .5*graphics::par("fin")[[1]]*(graphics::par("mar")/graphics::par("mai"))[[2]])
     
-    par(mar=tempmar)
+    graphics::par(mar=tempmar)
   }
 
   dotargs=.adjustdots(dotargs, ylab="", xlab="Cumulative Model Probabilities", col=c("tomato", "blue"), main = paste("Model Inclusion Based on Best ",length(pmps), " Models"))
@@ -3359,16 +3415,16 @@ image.bma <- function(x,yprop2pip=FALSE,order.by.pip=TRUE,do.par=TRUE,do.grid=TR
   #image.default(pmpbounds,pipbounds,t(betasigns),col=col,axes=FALSE,xlab=xlab,ylab=ylab,main=main,...)
 
   if (do.axis) {
-    axis(1,at=pmpbounds, labels=round(normali_factor*pmpbounds,2),cex.axis=cex.axis)
-    axis(2,at=pipbounds,labels=FALSE,line=FALSE)    
-    axis(2,at=pipbounds[-1]-diff(pipbounds)/2,labels=names(pipbounds[-1]),tick=FALSE,las=1,cex.axis=cex.axis)
+    graphics::axis(1,at=pmpbounds, labels=round(normali_factor*pmpbounds,2),cex.axis=cex.axis)
+    graphics::axis(2,at=pipbounds,labels=FALSE,line=FALSE)    
+    graphics::axis(2,at=pipbounds[-1]-diff(pipbounds)/2,labels=names(pipbounds[-1]),tick=FALSE,las=1,cex.axis=cex.axis)
   }
 
   if (do.grid) {
-    abline(v=round(pmpbounds,2),lty="dotted",col="grey")
-    abline(h=round(pipbounds,2),lty="dotted",col="grey")
+    graphics::abline(v=round(pmpbounds,2),lty="dotted",col="grey")
+    graphics::abline(h=round(pipbounds,2),lty="dotted",col="grey")
   }
-  if (do.par) {par(mar=oldmar)}
+  if (do.par) {graphics::par(mar=oldmar)}
 }
 
 
@@ -3526,7 +3582,7 @@ zlm <- function(formula, data=NULL, subset=NULL, g="UIP") {
     res$rank <- K+1
     res$fitted.values <- fitval
     res$df.residual <- N-K-1
-    res$xlevels <- .getXlevels(mt, mf)
+    res$xlevels <- stats::.getXlevels(mt, mf)
     res$call <- thiscall
     res$terms <- mt
     res$model <- mf
@@ -3705,7 +3761,7 @@ as.zlm <- function(bmao, model=1) {
 
    inclvbls= as.logical(bmao$topmod$bool_binary()[,model, drop=TRUE])
 
-   yXdf =as.data.frame(bmao$X.data)
+   yXdf =as.data.frame(bmao$arguments$X.data)
 
    zlmres=zlm(as.formula(yXdf[,c(TRUE,inclvbls)]),data=yXdf,g=bmao$gprior.info)
 
@@ -3735,7 +3791,7 @@ as.zlm <- function(bmao, model=1) {
 #' akin to \code{se.fit} in \code{\link{predict.lm}} } \item{residual.scale}{
 #' The part from the standard deviations that involves the identity matrix.
 #' Note that \code{sqrt(se.fit^2+residual.scale^2)} yields \code{std.err}. }
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso \code{\link{bms}} for creating zlm objects,
 #' \code{\link{predict.lm}} for a comparable function,
 #' \code{\link{predict.bma}} for predicting with bma objects
@@ -3836,7 +3892,7 @@ predict.zlm <- function(object, newdata=NULL, se.fit=FALSE, ...) {
 }
 
 
-
+#' @export
 density.zlm <- function(x,reg=NULL,addons="lesz",std.coefs=FALSE,n=300,plot=TRUE,hnbsteps=30,addons.lwd=1.5,...) {
     #this function does just the same as density.bma, but for an object of class zlm
     #permitted values for addons: e, s, l, z, g
@@ -3918,7 +3974,7 @@ density.zlm <- function(x,reg=NULL,addons="lesz",std.coefs=FALSE,n=300,plot=TRUE
 #' upon.} \item{call}{the call that created this \code{pred.density} object}
 #' @note In BMS version 0.3.0, \code{pred.density} may only cope with built-in
 #' \code{gprior}s, not with any user-defined priors.
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso \code{\link{predict.bma}} for simple point forecasts,
 #' \code{plot.pred.density} for plotting predictive densities,
 #' \code{\link{lps.bma}} for calculating the log predictive score
@@ -3962,7 +4018,7 @@ pred.density <- function(object, newdata=NULL, n=300, hnbsteps=30, ...) {
       #a wrapper for univariate t-dist with non-centrality parameter and variance parameter
       # (variance is df/(df-2)*varp)
       sqvarp=sqrt(varp)
-      dt((x-ncp)/sqvarp,df=df)/sqvarp
+      stats::dt((x-ncp)/sqvarp,df=df)/sqvarp
     }
 
     dsgivenykernel <- function(sf,kpa,N,z) {
@@ -3979,7 +4035,7 @@ pred.density <- function(object, newdata=NULL, n=300, hnbsteps=30, ...) {
     if (is.hyper) f21a=object$gprior.info$hyper.parameter
     if (is.bma(object)) {
       K=object$info$K; N=object$info$N
-      yXdata=as.matrix(object$X.data)
+      yXdata=as.matrix(object$arguments$X.data)
       tmo <- object$topmod
     } else if (is(object,"zlm")) {
       yXdata=as.matrix(object$model)
@@ -4172,9 +4228,9 @@ pred.density <- function(object, newdata=NULL, n=300, hnbsteps=30, ...) {
        if (densities_calculated) return(NULL)
        for (xf.index in 1:rnew) {
           if (!any(is.na(newX[xf.index,]))) {
-	
+ 
 
-	  #assign("xf_index",xf.index,envir=env) # IS THIS NECESSARY?
+ #assign("xf_index",xf.index,envir=env) # IS THIS NECESSARY?
           #xf_index <<- xf.index
           lbound=Eyf[[xf.index]]-sqrt(Varyf[[xf.index]])*4; ubound=Eyf[[xf.index]]+sqrt(Varyf[[xf.index]])*4
           seqs=seq(lbound,ubound,(ubound-lbound)/(n-1))
@@ -4252,21 +4308,21 @@ pred.density <- function(object, newdata=NULL, n=300, hnbsteps=30, ...) {
       leg.col=numeric(0);leg.lty=numeric(0); leg.legend=character(0)
       
       if (any(grep("g",addons,ignore.case=TRUE))) { # grid
-         grid()
+        graphics::grid()
       }
 
       if (any(grep("e",addons,ignore.case=FALSE))) {  # posterior mean
-         abline(v=fit[[xf.index]],col=2,lwd=addons.lwd)
+        graphics::abline(v=fit[[xf.index]],col=2,lwd=addons.lwd)
          leg.col=c(leg.col,2);leg.lty=c(leg.lty,1); leg.legend=c(leg.legend,"Exp. Value")
       }
       if (any(grep("s",addons,ignore.case=FALSE))) { # standard error bounds
-         abline(v=fit[[xf.index]]-2*stderrs[[xf.index]],col=2,lty=2,lwd=addons.lwd)
-         abline(v=fit[[xf.index]]+2*stderrs[[xf.index]],col=2,lty=2,lwd=addons.lwd)
+        graphics::abline(v=fit[[xf.index]]-2*stderrs[[xf.index]],col=2,lty=2,lwd=addons.lwd)
+        graphics::abline(v=fit[[xf.index]]+2*stderrs[[xf.index]],col=2,lty=2,lwd=addons.lwd)
          leg.col=c(leg.col,2);leg.lty=c(leg.lty,2);leg.legend=c(leg.legend,"2x Std.Errs")
       }
       
       if (any(grep("z",addons,ignore.case=TRUE))) { #zero line
-         abline(h=0,col="gray",lwd=addons.lwd)
+        graphics::abline(h=0,col="gray",lwd=addons.lwd)
       }
 
       if (!is.null(yf.addons)&&is.numeric(yf.addons)) { #yf actual y realization line
@@ -4274,7 +4330,7 @@ pred.density <- function(object, newdata=NULL, n=300, hnbsteps=30, ...) {
          yfs=as.vector(yf.addons)
          #if (length(yfs)==rnew) {
          if (!is.na(yfs[[xf.index]])) {
-           abline(v=yfs[[xf.index]],col=1,lwd=addons.lwd, lty=2)
+           graphics::abline(v=yfs[[xf.index]],col=1,lwd=addons.lwd, lty=2)
            leg.col=c(leg.col,1);leg.lty=c(leg.lty,2);leg.legend=c(leg.legend,"Realized y")
          } else warning("yf.addons must be a vector with the same number of elements as rows in newdata!")
          #}
@@ -4282,7 +4338,7 @@ pred.density <- function(object, newdata=NULL, n=300, hnbsteps=30, ...) {
       }
 
       if (any(grep("l",addons,ignore.case=TRUE))&(length(leg.col)>0)) { #legend
-        legend(x="topright",lty=leg.lty,col=leg.col,legend=leg.legend,box.lwd=0,bty="n",lwd=addons.lwd)
+        graphics::legend(x="topright",lty=leg.lty,col=leg.col,legend=leg.legend,box.lwd=0,bty="n",lwd=addons.lwd)
       }
 
     }
@@ -4332,21 +4388,21 @@ pred.density <- function(object, newdata=NULL, n=300, hnbsteps=30, ...) {
             }
             if (!is.null(realized.y)) realized.y <- consistent.yf(realized.y,predict_index);
             
-	    calc_alldens()
+      calc_alldens()
 	    #temp=reslist$densities()
-            oldask = par()$ask
+            oldask = graphics::par()$ask
             plotnb=0
 
             for (xf_index in predict_index) {
                   doplot=!dlist[[xf_index]]$has.na; plotnb=plotnb+doplot
-                  if (plotnb==2) par(ask=TRUE)
+                  if (plotnb==2) graphics::par(ask=TRUE)
                   dotargs=.adjustdots(dotargs,main=NULL,col="steelblue4", xlab="Response variable")
                   if (doplot) {
                     eval(as.call(c(list(as.name("plot.preddens"),as.name("xf_index"),addons=as.name("addons"),yf.addons=as.name("realized.y"),addons.lwd=as.name("addons.lwd")),as.list(dotargs))))
                     #plot.preddens(xf_index, addons=addons, yf.addons=realized.y, addons.lwd = addons.lwd, ..., main=main, col = col, xlab=xlab)
                   }
             }
-            par(ask=oldask)
+            graphics::par(ask=oldask)
     }
     reslist$n=n
     reslist$nmodel=nmodel
@@ -4380,7 +4436,7 @@ pred.density <- function(object, newdata=NULL, n=300, hnbsteps=30, ...) {
 #' \code{\link{pred.density}}: a data.frame, matrix or vector containing
 #' variables with which to predict.
 #' @return A scalar denoting the log predictive score
-#' @author Martin Feldkircher and Stefan Zeugner
+#' 
 #' @seealso \code{\link{pred.density}} for constructing predictive densities,
 #' \code{\link{bms}} for creating \code{bma} objects, \code{\link{density.bma}}
 #' for plotting coefficient densities
@@ -4413,11 +4469,13 @@ lps.bma <- function(object, realized.y, newdata=NULL) {
   return(object$lps(realized.y))
 }
 
+#' @export
 plot.pred.density <- function(x,  predict_index=NULL, addons="eslz", realized.y=NULL, addons.lwd=1.5, ...) {
     if (!is(x,"pred.density")) stop("x must be of class 'pred.density'!")
     x$plot(predict_index, realized.y=realized.y, addons=addons, addons.lwd=addons.lwd, ...)
 }
 
+#' @export
 print.pred.density <-function(x, digits=NULL, ...) {
      outmat=matrix(numeric(0),length(x$fit),2)
      colnames(outmat)=c("Exp.Val.","Std.Err.")
@@ -4435,12 +4493,13 @@ print.pred.density <-function(x, digits=NULL, ...) {
 # NEW UTILITIES                ######
 #####################################
 
+#' @export
 deviance.bma = function(object, exact=FALSE, ...) {
  #calculates (N-1)*posterior variance of a bma object = effective residual sum of squares
  # also works for objects of class zlm (and in principle for lm)
  #akin to method 'deviance'
  if (is.bma(object)) {
-  xx=as.matrix(object$X.data);  
+  xx=as.matrix(object$arguments$X.data);  
   ebeta = estimates.bma(object,order.by.pip=FALSE,exact=exact)[,2,drop=TRUE] 
  } else if (is(object,"lm")) {
    xx=as.matrix(object$model)
@@ -4451,14 +4510,17 @@ deviance.bma = function(object, exact=FALSE, ...) {
  ess=as.vector(crossprod(ebeta,as.vector(crossprod(xx[,-1,drop=FALSE],xx[,1]))))
  return((as.vector(crossprod(xx[,1,drop=TRUE]))-ess))
 }
+
+
+#' @export
 deviance.zlm=function(object, ...) deviance.bma(object)
 
 
-
+#' @export
 model.frame.bma = function(formula, ...) { 
   #akin to method 'model.frame'
   if (!is.bma(formula)) stop("argument 'formula' needs to be a bma object")
-  return(as.data.frame(formula$X.data))
+  return(as.data.frame(formula$arguments$X.data))
 }
 
 #' Variable names and design matrix
@@ -4472,9 +4534,8 @@ model.frame.bma = function(formula, ...) {
 #' 
 #' @aliases variable.names.bma model.frame.bma
 #' @param object A \code{bma} object (as produced by \code{\link{bms}})
-#' @param formula A \code{bma} object (as produced by \code{\link{bms}})
-#' @param list() further arguments passed to or from other methods
-#' @author Martin Feldkircher and Stefan Zeugner
+#' @param ... further arguments passed to or from other methods
+#' 
 #' @seealso \code{\link{bms}} for creating bma objects
 #' 
 #' Check \url{http://bms.zeugner.eu} for additional help.
@@ -4485,12 +4546,12 @@ model.frame.bma = function(formula, ...) {
 #'  bma_enum=bms(datafls[1:20,1:10])
 #'  
 #'  model.frame(bma_enum) # similar to 
-#'  bma_enum$X.data
+#'  bma_enum$arguments$X.data
 #'  
 #'  variable.names(bma_enum)[-1] # is equivalent to
 #'  bma_enum$reg.names
 #'  
-#' 
+#' @export
 variable.names.bma = function(object, ...) {
   #akin to method 'variable.names'
   if (!is.bma(object)) stop("argument 'object' needs to be a bma object")
@@ -4511,11 +4572,8 @@ variable.names.bma = function(object, ...) {
 #' 
 #' @aliases variable.names.zlm vcov.zlm logLik.zlm
 #' @param object A \code{bma} object (as produced by \code{\link{bms}})
-#' @param include.const Whether the variance-covariance matrix returned by
-#' \code{vcov.zlm} should also include a line and row for the intercept (which
-#' will be NA for most priors)
-#' @param list() further arguments passed to or from other methods
-#' @author Martin Feldkircher and Stefan Zeugner
+#' @param ... further arguments passed to or from other methods
+#' 
 #' @seealso \code{\link{zlm}} for creating \code{zlm} objects
 #' 
 #' Check \url{http://bms.zeugner.eu} for additional help.
@@ -4536,6 +4594,7 @@ variable.names.zlm = function(object, ...) {
   return(names(object$coefficients))
 }
 
+#' @export
 logLik.zlm = function(object,...) {
   #marginal likelihood of a 'zlm' model, akin to method 'logLik'
   if (!is(object,"zlm")) stop("argument 'formula' needs to be zlm object")
@@ -4547,7 +4606,7 @@ logLik.zlm = function(object,...) {
 }
 
 
-
+#' @export
 vcov.zlm = function(object, include.const = FALSE, ...) {
   #akin to vcov.lm
   
@@ -4589,8 +4648,8 @@ vcov.zlm = function(object, include.const = FALSE, ...) {
 #' MCMC frequencies, if \code{exact=TRUE} then it will be based on\cr
 #' analytical posterior model probabilities - cf. argument \code{exact} in
 #' \code{\link{coef.bma}}.
-#' @param list() further arguments passed to or from other methods
-#' @author Martin Feldkircher and Stefan Zeugner
+#' @param ... further arguments passed to or from other methods
+#' 
 #' @seealso \code{\link{bms}} for creating \code{bma} objects and priors,
 #' \code{\link{zlm}} object.
 #' 
@@ -4608,7 +4667,7 @@ vcov.zlm = function(object, include.const = FALSE, ...) {
 #'  1 - post.var(mm) / ( var(datafls[,1])*(1-1/nrow(datafls)) )
 #'  
 #' @export
-post.var= function(object,exact=FALSE) {
+post.var= function(object,exact=FALSE,...) {
   #calculates the expected posterior standard error based on effective Residual sum of squares, for objects of class 'bma', 'zlm', 'lm', ...
   if (!(is.bma(object) | is(object,"lm"))) stop("Required input is an object of class 'bma' or 'lm'/'zlm'.")
   od=deviance(object, exact=exact)  
@@ -4618,6 +4677,7 @@ post.var= function(object,exact=FALSE) {
   return(ret)
 }
 
+#' @export
 post.pr2= function(object,exact=FALSE) {
   #calculates a pseudo-R-squared based on effective Residual sum of squares, for objects of class 'bma', 'zlm', 'lm', ...
   if (!(is.bma(object) | is(object,"lm"))) stop("Required input is an object of class 'bma' or 'lm'/'zlm'.")
