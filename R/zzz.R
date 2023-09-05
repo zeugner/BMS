@@ -1,3 +1,8 @@
+
+
+
+
+
 #' Class "topmod"
 #' 
 #' An updateable list keeping the best x models it encounters in any kind of
@@ -175,3 +180,16 @@ setClass("gprior")
 #' priors.\cr Check \url{http://bms.zeugner.eu/custompriors.php} for examples.
 #' @keywords classes
 setClass('mprior')
+
+
+
+
+
+
+#' @importFrom stats density
+
+
+.flsresultlist =function(item=NULL) {
+  if (is.null(item)) return(.flsresults)
+  return(.flsresults[[item]])
+}

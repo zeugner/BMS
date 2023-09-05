@@ -72,7 +72,6 @@ foo2 = zlm(y~GDP60+LifeExp, data=datafls, subset=2:70) #basic model, omitting th
 summary(foo2)
 
 
-
 }
 \references{
 The representation follows Fernandez, C. E. Ley and M. Steel

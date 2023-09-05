@@ -69,10 +69,9 @@ pmpmodel(mm,c(6,7))
 pmpmodel(mm,1:5)
 
 
-
 }
 \seealso{
-\code{\link{pmp.bma}} and \code{\link{topmodels.bma}} for similar
+\code{\link{pmp.bma}} for similar
 functions
 
 Check \url{http://bms.zeugner.eu} for additional help.

@@ -72,7 +72,6 @@ plotComp(mm1,mm2,varNr=c("GDP60", "LifeExp"),comp="Post Mean")
 
 
 
-
 }
 \seealso{
 \code{\link{coef.bma}} for the underlying function

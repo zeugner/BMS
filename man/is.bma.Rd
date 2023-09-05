@@ -21,7 +21,6 @@ tests for objects of class "bma"
  data(datafls)
  mm=bms(datafls,burn=1000, iter=4000)
  is.bma(mm)
-
 }
 \seealso{
 'Output' in \code{\link{bms}} for the structure of a 'bma' object

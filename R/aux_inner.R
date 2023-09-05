@@ -147,7 +147,7 @@
          post.odds1=ki*log(m/K)+{K-ki}*log(1-m/K)
          return(post.odds1)
     },
-    mp.Kdist=dbinom(x=0:K,size=K,prob=m/K,log=FALSE)
+    mp.Kdist=stats::dbinom(x=0:K,size=K,prob=m/K,log=FALSE)
   ))
 }
 
@@ -322,7 +322,7 @@
           start.value=min((N-3),K)
         }
         # draw randomly
-        sorter=runif(K)
+        sorter=stats::runif(K)
         start.position=order(sorter,seq(1:K))[1:start.value]
 
 
@@ -389,9 +389,9 @@
  #conditional on whether it is included in the current model it can be discarded or added.
 
 
-    indch<-ceiling(runif(1,0,K)) #rounding to the smallest integer part by floor, uniform distr. [0,1]  
+    indch<-ceiling(stats::runif(1,0,K)) #rounding to the smallest integer part by floor, uniform distr. [0,1]  
     bdropit<-as.logical(molddraw[[indch]]); 
-    if (oldk==maxk) if (!bdropit) {indch=(1:K)[molddraw==1][[ceiling(runif(1,0,sum(molddraw)))]]; bdropit=molddraw[[indch]]}
+    if (oldk==maxk) if (!bdropit) {indch=(1:K)[molddraw==1][[ceiling(stats::runif(1,0,sum(molddraw)))]]; bdropit=molddraw[[indch]]}
      if (bdropit){  #dropping
          addvar<-0;dropvar<-indch;
          molddraw[[indch]]<-0
@@ -413,7 +413,7 @@
  #Reversible Jump Algorithm
  .rev.jump=function(molddraw=molddraw,K=K,...,maxk=Inf,oldk=0){
   #Reversible Jump Algorithm: with equal prob decides between swap step or add/drop step (.fls.samp)
-    rev.idx=ceiling(runif(1,0,2))  #rev.idx is a flag that indicates  the three possible steps of
+    rev.idx=ceiling(stats::runif(1,0,2))  #rev.idx is a flag that indicates  the three possible steps of
                                    #the reversible jump algorithm, 1=birth or death and 2=move.
    # Perform Death, Birth or Move Step
    # if rev.idx is 1, do the same as in fls sampler (i.e. increase or  decrease depending
@@ -428,8 +428,8 @@
    if(rev.idx==2){
       var.in=(1:K)[as.logical(molddraw)]  #positions of the variables that are currently in the model
       var.out=(1:K)[!as.logical(molddraw)] #positions of the variables that are currently out of the model
-      var.in.rand=ceiling(length(var.in)*runif(1,0,1)); 
-      addvar=var.out[ceiling(length(var.out)*runif(1,0,1))]
+      var.in.rand=ceiling(length(var.in)*stats::runif(1,0,1)); 
+      addvar=var.out[ceiling(length(var.out)*stats::runif(1,0,1))]
       dropvar=var.in[var.in.rand]
       mnewdraw=molddraw; mnewdraw[addvar]=1; mnewdraw[dropvar]=0;
       positionnew=(1:K)[as.logical(mnewdraw)]
@@ -572,7 +572,7 @@
 
  .fls.samp.int=function(molddraw=molddraw,K=K,mPlus=mPlus,maxk=Inf,oldk=0){
       #interactions sampler for .fls.samp
-      indch=ceiling(runif(1,0,1)*K) #rounding to the smallest integer  part by floor, uniform distr. [0,1]
+      indch=ceiling(stats::runif(1,0,1)*K) #rounding to the smallest integer  part by floor, uniform distr. [0,1]
        # have to make sure that we delete all the regressors                                            
       
       if (molddraw[indch]==1){  #dropping
@@ -597,7 +597,7 @@
  #Reversible Jump Algorithm
  .rev.jump.int=function(molddraw=molddraw,K=K,mPlus=mPlus,maxk=Inf,oldk=0){
        #interactions sampler for .rev.jump
-    rev.idx=floor(runif(1,0,1)*2)  #rev.idx is a flag that indicates  the three possible steps of
+    rev.idx=floor(stats::runif(1,0,1)*2)  #rev.idx is a flag that indicates  the three possible steps of
                                    #the reversible jump algorithm, 1=birth or death and 2=move.
    # Perform Death, Birth or Move Step
    # if rev.idx is 1, do the same as in fls sampler (i.e. increase or  decrease depending
@@ -610,8 +610,8 @@
    } else {
       var.in=(1:K)[as.logical(molddraw)]  #positions of the variables that are currently in the model
       var.out=(1:K)[!as.logical(molddraw)] #positions of the variables that are currently out of the model
-      mnewdraw=(molddraw>mPlus[,var.in[ceiling(length(var.in)*runif(1,0,1))]])
-      mnewdraw=mnewdraw|mPlus[var.out[ceiling(length(var.out)*runif(1,0,1))],]
+      mnewdraw=(molddraw>mPlus[,var.in[ceiling(length(var.in)*stats::runif(1,0,1))]])
+      mnewdraw=mnewdraw|mPlus[var.out[ceiling(length(var.out)*stats::runif(1,0,1))],]
       positionnew=(1:K)[mnewdraw]
       addvar = (1:K)[molddraw<mnewdraw]; dropvar = (1:K)[molddraw>mnewdraw];
       if (length(dropvar)==0) dropvar=0;  if (length(addvar)==0) addvar=0
@@ -653,12 +653,11 @@
     
     postad.reg.names <- function(X.data) {
       # extracts the column names of covariates or constructs ones: X.data is data.frame
-      if(is.null(colnames(X.data)[-1]) || colnames(X.data)[-1]==""){
-         reg.names<-paste("beta",1:K)
-      }
-      else{
-         reg.names=colnames(X.data)[-1]
-      }
+      xdcn=colnames(X.data)
+      if(is.null(xdcn)) {xdcn<- rep("",NCOL(X.data))}
+      if(anyNA(xdcn)) {xdcn[is.na(xdcn)]<- rep("",NCOL(X.data))[is.na(xdcn)]}
+      if(any(trimws(xdcn)=='')) {xdcn[trimws(xdcn)=='']<-paste0("Vbl",0:K)[trimws(xdcn)==''] }
+      reg.names=xdcn[-1]
       return(reg.names)
     }
 

@@ -49,7 +49,6 @@ Expected value of prediction based on 'bma' object
  predict(mm[1:10], exact=TRUE)
  
  
-
 }
 \seealso{
 \code{\link{coef.bma}} for obtaining coefficients,

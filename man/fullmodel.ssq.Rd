@@ -38,7 +38,6 @@ fullmodel.ssq(mm)
 fullmodel.ssq(mm$X.data)
 
 
-
 }
 \seealso{
 \code{\link{bms}} for creating bma objects, \code{\link{lm}} for

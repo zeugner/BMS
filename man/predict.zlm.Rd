@@ -43,7 +43,6 @@ Bayesian model under Zellner's g prior
  #prediction based on a 'new data point', with 'standard errors'
  predict(mm, newdata=datafls[1,], se.fit=TRUE) 
  
-
 }
 \seealso{
 \code{\link{bms}} for creating zlm objects,

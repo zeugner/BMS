@@ -156,7 +156,6 @@ it has no direct application for a user of the BMS package.
   tm$bool_binary()
   tm$betas()
 
-
 }
 \seealso{
 the object resulting from \code{\link{bms}} includes an element of

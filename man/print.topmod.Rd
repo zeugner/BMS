@@ -13,8 +13,8 @@
 }
 \value{
 if \code{x} contains more than one model, then the function returns
-a 2-column matrix: \item{Row Names}{show the model binaries in hexcode (cf.
-\code{\link{topmodels.bma}})} \item{Column 'Marg.Log.Lik'}{shows the
+a 2-column matrix: \item{Row Names}{show the model binaries in hexcode 
+} \item{Column 'Marg.Log.Lik'}{shows the
 marginal log-likelihoods of the models in \code{x}} \item{Column 'MCMC
 Freq'}{shows the MCMC frequencies of the models in \code{x}}
 
@@ -60,7 +60,6 @@ topmodels.bma(mm[2])
 
 #and to
 as.vector(mm$topmod[2]$bool_binary())
-
 
 
 }

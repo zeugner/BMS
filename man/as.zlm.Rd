@@ -55,12 +55,11 @@ m2c=as.zlm(mm,"01")
 
 
 
-
 }
 \seealso{
 \code{\link{bms}} for creating \code{bma} objects,
 \code{\link{zlm}} for creating \code{zlm} objects,
-\code{\link{topmodels.bma}} and \code{\link{pmp.bma}} for displaying the
+\code{\link{pmp.bma}} for displaying the
 topmodels in a \code{bma} object
 
 Check \url{http://bms.zeugner.eu} for additional help.

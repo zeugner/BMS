@@ -47,7 +47,6 @@ summary(foo)
 sfoo = summary(foo,printout=FALSE)
 print(sfoo$E.shrinkage)
 
-
 }
 \seealso{
 \code{\link{zlm}} for creating \code{zlm} objects,

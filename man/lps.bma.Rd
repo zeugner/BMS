@@ -49,7 +49,6 @@ result on to \code{lps.bma}.
  zz = zlm(datafls)
  lps.bma(zz, realized.y=datafls[,1] , newdata=datafls[,-1])
  
-
 }
 \seealso{
 \code{\link{pred.density}} for constructing predictive densities,
