@@ -11,11 +11,7 @@
 \arguments{
 \item{object}{A \code{bma} object (as produced by \code{\link{bms}})}
 
-\item{include.const}{Whether the variance-covariance matrix returned by
-\code{vcov.zlm} should also include a line and row for the intercept (which
-will be NA for most priors)}
-
-\item{list()}{further arguments passed to or from other methods}
+\item{...}{further arguments passed to or from other methods}
 }
 \description{
 Simple utilities retrieving variable names and design matrix from a bma
@@ -43,8 +39,5 @@ respective coefficent prior \cr
 \code{\link{zlm}} for creating \code{zlm} objects
 
 Check \url{http://bms.zeugner.eu} for additional help.
-}
-\author{
-Martin Feldkircher and Stefan Zeugner
 }
 \keyword{utilities}

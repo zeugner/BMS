@@ -47,7 +47,4 @@ The function \code{hex2bin} does the reverse operation, e.g.
 
 Check \url{http://bms.zeugner.eu} for additional help.
 }
-\author{
-Martin Feldkircher and Stefan Zeugner
-}
 \keyword{arith}

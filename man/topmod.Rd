@@ -54,9 +54,6 @@ see example below}
 \item{fixed_vector}{optional matrix whose columns are a fixed vector
 initialize topmod object with (same \code{ncol} as \code{modelbinaries}) -
 see example below}
-
-\item{tmo}{A 'topmod' object, as e.g. created by topmod, or as element of
-the result of \code{\link{bms}}}
 }
 \value{
 a call to \code{topmod} returns a list of class "topmod" with the
@@ -162,8 +159,5 @@ the object resulting from \code{\link{bms}} includes an element of
 class 'topmod'
 
 Check \url{http://bms.zeugner.eu} for additional help.
-}
-\author{
-Martin Feldkircher and Stefan Zeugner
 }
 \keyword{models}

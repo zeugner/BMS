@@ -76,7 +76,4 @@ functions
 
 Check \url{http://bms.zeugner.eu} for additional help.
 }
-\author{
-Stefan Zeugner
-}
 \keyword{utilities}

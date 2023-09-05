@@ -10,9 +10,7 @@
 \arguments{
 \item{object}{A \code{bma} object (as produced by \code{\link{bms}})}
 
-\item{formula}{A \code{bma} object (as produced by \code{\link{bms}})}
-
-\item{list()}{further arguments passed to or from other methods}
+\item{...}{further arguments passed to or from other methods}
 }
 \description{
 Simple utilities retrieving variable names and design matrix from a bma
@@ -29,7 +27,7 @@ All functions are \code{bma}-functions for the generic methods
  bma_enum=bms(datafls[1:20,1:10])
  
  model.frame(bma_enum) # similar to 
- bma_enum$X.data
+ bma_enum$arguments$X.data
  
  variable.names(bma_enum)[-1] # is equivalent to
  bma_enum$reg.names
@@ -39,8 +37,5 @@ All functions are \code{bma}-functions for the generic methods
 \code{\link{bms}} for creating bma objects
 
 Check \url{http://bms.zeugner.eu} for additional help.
-}
-\author{
-Martin Feldkircher and Stefan Zeugner
 }
 \keyword{utilities}

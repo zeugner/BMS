@@ -72,7 +72,4 @@ creating 'bma' objects.
 
 Check \url{http://bms.zeugner.eu} for additional help.
 }
-\author{
-Martin Feldkircher and Stefan Zeugner
-}
 \keyword{hplot}

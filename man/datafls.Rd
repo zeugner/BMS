@@ -54,8 +54,8 @@ A data frame with 72 observations on the following 42 variables.
 }
 \source{
 Fernandez, C., Ley, E., and Steel, M. F. (2001b). Model Uncertainty in Cross-Country Growth Regressions. Journal of Applied Econometrics, 16:563-576.
- Data set from \url{http://www2.warwick.ac.uk/fac/sci/statistics/staff/academic/steel/steel_homepage/software}.
- A working paper version of Fernandez, Ley and Steel (2001) is available at \url{http://www2.warwick.ac.uk/fac/sci/statistics/staff/academic/steel/steel_homepage/software/fls3fin.pdf}.
+ Data set from \url{https://www2.warwick.ac.uk/fac/sci/statistics/staff/academic/steel/steel_homepage/software}.
+ A working paper version of Fernandez, Ley and Steel (2001) is available at \url{https://www2.warwick.ac.uk/fac/sci/statistics/staff/academic/steel/steel_homepage/software/fls3fin.pdf}.
 }
 \usage{
 datafls

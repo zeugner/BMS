@@ -78,7 +78,4 @@ plotComp(mm1,mm2,varNr=c("GDP60", "LifeExp"),comp="Post Mean")
 
 Check \url{http://bms.zeugner.eu} for additional help.
 }
-\author{
-Martin Feldkircher and Stefan Zeugner
-}
 \keyword{hplot}

@@ -35,7 +35,7 @@ mm=bms(datafls)
 fullmodel.ssq(mm)
 
 #equivalent:
-fullmodel.ssq(mm$X.data)
+fullmodel.ssq(datafls)
 
 
 }
@@ -44,8 +44,5 @@ fullmodel.ssq(mm$X.data)
 OLS estimation
 
 Check \url{http://bms.zeugner.eu} for additional help.
-}
-\author{
-Martin Feldkircher and Stefan Zeugner
 }
 \keyword{utilities}

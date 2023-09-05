@@ -29,7 +29,7 @@ deviations of) coefficients for the best models in a bma object.
 }
 \note{
 Note that the elements of \code{beta.draws.bma(bmao)} correspond to
-\code{bmao$topmood$betas()}
+\code{bmao$topmod$betas()}
 }
 \examples{
 
@@ -50,8 +50,5 @@ Note that the elements of \code{beta.draws.bma(bmao)} correspond to
 for aggregate coefficients
 
 Check \url{http://bms.zeugner.eu} for additional help.
-}
-\author{
-Martin Feldkircher and Stefan Zeugner
 }
 \keyword{utilities}

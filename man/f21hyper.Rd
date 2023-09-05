@@ -29,7 +29,7 @@ for \eqn{-1 \leq z \leq 1} and \eqn{a,b,c \geq 0}
 \details{
 The function \code{f21hyper} complements the analysis of the 'hyper-g prior'
 introduced by Liang et al. (2008).\cr For parameter values, compare cf.
-\url{http://en.wikipedia.org/wiki/Hypergeometric_function#The_series_2F1}.
+\url{https://en.wikipedia.org/wiki/Hypergeometric_function}.
 }
 \note{
 This function is a simple wrapper function of sped-up code that is
@@ -50,14 +50,11 @@ Liang F., Paulo R., Molina G., Clyde M., Berger J.(2008):
 Mixtures of g-priors for Bayesian variable selection. J. Am. Statist. Assoc.
 103, p. 410-423
 
-\url{http://en.wikipedia.org/wiki/Hypergeometric_function#The_series_2F1}
+\url{https://en.wikipedia.org/wiki/Hypergeometric_function}
 }
 \seealso{
 package \code{hypergeo} for a more proficient implementation.
 
 Check \url{http://bms.zeugner.eu} for additional help.
-}
-\author{
-Martin Feldkircher and Stefan Zeugner
 }
 \keyword{utilities}

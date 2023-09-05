@@ -7,7 +7,7 @@
 \alias{deviance.zlm}
 \title{Posterior Variance and Deviance}
 \usage{
-post.var(object, exact = FALSE)
+post.var(object, exact = FALSE, ...)
 }
 \arguments{
 \item{object}{A \code{bma} object (as produced by \code{\link{bms}}) or a
@@ -18,7 +18,7 @@ MCMC frequencies, if \code{exact=TRUE} then it will be based on\cr
 analytical posterior model probabilities - cf. argument \code{exact} in
 \code{\link{coef.bma}}.}
 
-\item{list()}{further arguments passed to or from other methods}
+\item{...}{further arguments passed to or from other methods}
 }
 \description{
 Returns posterior residual variance, deviance, or pseudo R-squared,
@@ -50,8 +50,5 @@ dependent variance. \cr \code{deviance.bma}: returns the
 \code{\link{zlm}} object.
 
 Check \url{http://bms.zeugner.eu} for additional help.
-}
-\author{
-Martin Feldkircher and Stefan Zeugner
 }
 \keyword{utilities}

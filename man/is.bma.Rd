@@ -27,7 +27,4 @@ tests for objects of class "bma"
 
 Check \url{http://bms.zeugner.eu} for additional help.
 }
-\author{
-Martin Feldkircher and Stefan Zeugner
-}
 \keyword{classes}

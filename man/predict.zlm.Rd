@@ -51,7 +51,4 @@ Bayesian model under Zellner's g prior
 
 Check \url{http://bms.zeugner.eu} for additional help.
 }
-\author{
-Martin Feldkircher and Stefan Zeugner
-}
 \keyword{utilities}

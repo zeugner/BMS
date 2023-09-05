@@ -67,8 +67,10 @@ necessary for the calculation of quantiles.
  dd1 = density(rnorm(1000))
  quantile(dd1)
  
+\dontrun{
  #application to list of densities:
  quantile.density( list(density(rnorm(1000)), density(rnorm(1000))) )
+}
 
 }
 \seealso{

@@ -287,6 +287,11 @@ proportional to \eqn{1/\sigma}.
   
 }
 \references{
+\url{http://bms.zeugner.eu}: BMS package homepage with help and tutorials
+
+Feldkircher, M. and S. Zeugner (2015): Bayesian Model Averaging Employing 
+Fixed and Flexible Priors: The BMS Package for R, Journal of Statistical Software 68(4).
+
 Feldkircher, M. and S. Zeugner (2009): Benchmark Priors
 Revisited: On Adaptive Shrinkage and the Supermodel Effect in Bayesian Model
 Averaging, IMF Working Paper 09/202.
@@ -314,6 +319,6 @@ sampling over several runs.
 Check \url{http://bms.zeugner.eu} for additional help.
 }
 \author{
-Martin Feldkircher and Stefan Zeugner
+Martin Feldkircher, Paul Hofmarcher, and Stefan Zeugner
 }
 \keyword{models}

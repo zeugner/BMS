@@ -135,7 +135,4 @@ for comparing MCMC frequencies and marginal likelihoods.
 
 Check \url{http://bms.zeugner.eu} for additional help.
 }
-\author{
-Martin Feldkircher and Stefan Zeugner
-}
 \keyword{models}

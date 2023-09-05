@@ -24,6 +24,7 @@ models
 The upper plot shows the prior and posterior distribution of model
 sizes (\code{\link{plotModelsize}}).\cr The lower plot is an indicator of
 how well the bma object has converged (\code{\link{plotConv}}).
+ and Paul
 }
 \examples{
 
@@ -36,8 +37,5 @@ plot(mm)
 \code{\link{plotModelsize}} and \code{\link{plotConv}}
 
 Check \url{http://bms.zeugner.eu} for additional help.
-}
-\author{
-Martin Feldkircher and Stefan Zeugner and Paul
 }
 \keyword{hplot}
