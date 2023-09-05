@@ -66,7 +66,4 @@ bma objects, \code{print.bma} makes use of \code{summary.bma}.
 
 Check \url{http://bms.zeugner.eu} for additional help.
 }
-\author{
-Martin Feldkircher and Stefan Zeugner
-}
 \keyword{utilities}
