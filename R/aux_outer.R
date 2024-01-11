@@ -200,7 +200,8 @@ pmp.bma <- function(bmao, oldstyle=FALSE) {
        log.null.lik=0
      } else {
        topmods=bmao$topmod 
-       log.null.lik=(1-bmao$info$N)/2*log(as.vector(crossprod(bmao$arguments$X.data[,1]-mean(bmao$arguments$X.data[,1]))))
+       log.mid.lik=bmao$info$log.mid.lik; if (is.null(log.mid.lik)) {log.mid.lik=0}
+       log.null.lik=(1-bmao$info$N)/2*log(as.vector(crossprod(bmao$arguments$X.data[,1]-mean(bmao$arguments$X.data[,1])))) - log.mid.lik
        cumsumweights=bmao$info$cumsumweights
        was.enum=(bmao$arguments$mcmc=="enum")       
      }
@@ -209,7 +210,7 @@ pmp.bma <- function(bmao, oldstyle=FALSE) {
      
     
     if (was.enum) {
-       lt2=exp(topmods$lik()-log.null.lik)/cumsumweights #Prob of top "nmodel" models, (loglik based)
+       lt2=exp(topmods$lik())/cumsumweights #Prob of top "nmodel" models, (loglik based)
     } else {
        lt2=topmods$ncount()/cumsumweights #MCMC Prob of top "nmodel" models, numerical 
     }
@@ -340,7 +341,8 @@ pmpmodel= function(bmao, model=numeric(0), exact=TRUE) {
   ncounts=bmao$topmod$ncount()
   cumsumweights=bmao$info$cumsumweights
   yty=as.vector(crossprod(bmao$arguments$X.data[,1,drop=TRUE]-mean(bmao$arguments$X.data[,1,drop=TRUE])))
-  log.null.lik= bmao$gprior.info$lprobcalc$just.loglik(ymy=yty,k=0)
+  log.mid.lik=bmao$info$log.mid.lik; if (is.null(log.mid.lik)) {log.mid.lik=0}
+  log.null.lik= bmao$gprior.info$lprobcalc$just.loglik(ymy=yty,k=0) - log.mid.lik
   
   
   

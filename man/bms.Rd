@@ -153,7 +153,10 @@ the correlation between the best models' MCMC frequencies and their marg.
 likelihoods.\cr \code{timed} is the time that was needed for MCMC sampling,
 \code{cons} is the posterior expected value of the constant. \code{K} and
 \code{N} are the maximum number of covariates and the sample size,
-respectively.} \item{arguments}{a list of the evaluated function arguments
+respectively. \code{log.mid.lik} is an internal measure used not to exceed
+the numerical tolerance: it is a constant log value which is substracted 
+from all likelihoods in oder to get stored log likleihood figures not too far 
+from zero  } \item{arguments}{a list of the evaluated function arguments
 provided to \code{bms} (see above)} \item{topmod}{a 'topmod' object
 containing the best drawn models. see \code{\link{topmod}} for more details}
 \item{start.pos}{the positions of the starting model. If bmao is a'bma'

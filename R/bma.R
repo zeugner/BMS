@@ -306,7 +306,10 @@
 #' likelihoods.\cr \code{timed} is the time that was needed for MCMC sampling,
 #' \code{cons} is the posterior expected value of the constant. \code{K} and
 #' \code{N} are the maximum number of covariates and the sample size,
-#' respectively.} \item{arguments}{a list of the evaluated function arguments
+#' respectively. \code{log.mid.lik} is an internal measure used not to exceed
+#' the numerical tolerance: it is a constant log value which is substracted 
+#' from all likelihoods in oder to get stored log likleihood figures not too far 
+#' from zero  } \item{arguments}{a list of the evaluated function arguments
 #' provided to \code{bms} (see above)} \item{topmod}{a 'topmod' object
 #' containing the best drawn models. see \code{\link{topmod}} for more details}
 #' \item{start.pos}{the positions of the starting model. If bmao is a'bma'
@@ -591,6 +594,7 @@ bms <-function(X.data,burn=1000,iter=NA,nmodel=500,mcmc="bd",g="UIP",mprior="ran
     mid.lik=lprobcalc$just.loglik(ymy=yty*.001,k=ceiling(K/2)) # calculate Likelihood for max model
   }
   if (!is.finite(mid.lik)) { mid.lik=sapply(as.list(seq(.1,.9,.1)),function(x) lprobcalc$just.loglik(ymy=yty*x,k=ceiling(K/2)));  mid.lik=max(mid.lik[is.finite(mid.lik)]) }
+  mid.lik =.7*mid.lik+.3*null.lik
   #adding up posterior stats has been outsourced to sub-functions for speed reasons
   if (collect.otherstats) {
     addup<-  function() {
@@ -633,7 +637,7 @@ bms <-function(X.data,burn=1000,iter=NA,nmodel=500,mcmc="bd",g="UIP",mprior="ran
     if (collect.otherstats) {
       addup<- function() {
       
-      weight=  exp(pmpold+lprobold-mid.lik)
+      weight=  exp(pmpold+lprobold)
       inccount <<- inccount + weight*molddraw #PIPs
       msize<<-msize + weight*kold   # average size of models
       cumsumweights<<-cumsumweights+weight #denominator to get at sum of PMPs=1     
@@ -649,7 +653,7 @@ bms <-function(X.data,burn=1000,iter=NA,nmodel=500,mcmc="bd",g="UIP",mprior="ran
       }
     } else {
       addup <- function() {
-      weight=  exp(pmpold+lprobold-mid.lik)
+      weight=  exp(pmpold+lprobold)
       #browser()  
       inccount <<- inccount + weight*molddraw #PIPs
       msize<<-msize + weight*kold   # average size of models
@@ -675,12 +679,12 @@ bms <-function(X.data,burn=1000,iter=NA,nmodel=500,mcmc="bd",g="UIP",mprior="ran
   ols.object=.ols.terms2(positions=(1:K)[molddraw==1],yty=yty,k=kold,N,K=K,XtX.big=XtX.big,Xty.big=Xty.big) #OLS results from starter model
 
   lik.list=lprobcalc$lprob.all(ymy=ols.object$ymy, k=kold, bhat=ols.object$bhat, diag.inverse=ols.object$diag.inverse) #likelihood and expected values for starter model
-  lprobold=lik.list$lprob
+  lprobold=lik.list$lprob - mid.lik
   b1=lik.list$b1new
   b2=lik.list$b2new
   
-  ## calculate the posterior model probability for the first model
-  pmpold=pmplist$pmp(ki=kold,mdraw=molddraw)
+  ## calculate the prior  model probability for the first model
+  pmpold=pmplist$pmp(ki=kold,mdraw=molddraw) 
   ##################################################################################
   
   
@@ -756,7 +760,7 @@ while(i<nrep) {
         }
     
         if ( (ymy.candi<0) | is.na(ymy.candi) ) stop(paste("stumbled on rank-deficient model" ))
-        lprobnew = lprobcalc[["just.loglik"]](ymy=ymy.candi,k=knew) # get the log-likelihood out of the ResidSS
+        lprobnew = lprobcalc[["just.loglik"]](ymy=ymy.candi,k=knew) - mid.lik # get the log-likelihood out of the ResidSS
         
         #Now decide whether to accept candidate draw
         
@@ -782,7 +786,7 @@ while(i<nrep) {
           lik.list = lprobcalc[["lprob.all"]](max(0,ols.res$ymy), knew, ols.res$bhat, ols.res$diag.inverse)
 
 
-          lprobold=lik.list[["lprob"]]
+          lprobold=lik.list[["lprob"]] - mid.lik
           position = positionnew
           pmpold=pmpnew  #get posterior odds for new model  if accepted
           molddraw=mnewdraw
@@ -820,7 +824,7 @@ while(i<nrep) {
   # do aggregating calculations
   if (is.enum) {iter=iter+1; models.visited=models.visited+1}
   bmo=matrix(bmo,4,byrow=TRUE); b1mo=bmo[1,]; b2mo=bmo[2,]; k.vec=bmo[3,]; possign=bmo[4,]; rm(bmo)
-  post.inf=.post.calc(gprior.info,add.otherstats,k.vec,null.count,X.data,topmods,b1mo,b2mo,iter,burn,inccount,models.visited,K,N,msize,timed,cumsumweights,mcmc,possign)
+  post.inf=.post.calc(gprior.info,add.otherstats,k.vec,null.count,X.data,topmods,b1mo,b2mo,iter,burn,inccount,models.visited,K,N,msize,timed,cumsumweights,mcmc,possign,mid.lik)
   
   result=list(info=post.inf$info,arguments=.construct.arglist(bms, environment()),topmod=topmods,start.pos=sort(start.position),gprior.info=post.inf$gprior.info,mprior.info=pmplist,reg.names=post.inf$reg.names,bms.call=try(match.call(bms,sys.call(0)),silent=TRUE))
   if (!is.null(result$X.data)) { result$X.data<-NULL }

@@ -50,9 +50,9 @@ if (!grepl('err',class(try(utils:::win.version(),silent=TRUE)))) {
 
 
 
-
-#%ALLUSERSPROFILE%\Microsoft\AppV\Client\Integration\602C1D12-9652-4057-A07E-CB0228E7F453\Root\R\R-4.1.2\bin\x64\R.exe CMD check --as-cran C:\Users\zeugnst\rpackages\BMS\BMS\BMS_0.3.5.tar.gz
-#shell("%ALLUSERSPROFILE%\Microsoft\AppV\Client\Integration\602C1D12-9652-4057-A07E-CB0228E7F453\Root\R\R-4.1.2\bin\x64\R.exe CMD check --as-cran C:\Users\zeugnst\rpackages\BMS\BMS\BMS_0.3.5.tar.gz")
+#PATH=C:\Program Files\Python39\Scripts\;C:\Program Files\Python39\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\SafeNet\Authentication\SAC\x64;C:\Program Files\SafeNet\Authentication\SAC\x32;C:\Program Files (x86)\Pulse Secure\VC142.CRT\X64\;C:\Program Files (x86)\Pulse Secure\VC142.CRT\X86\;C:\Program Files\Git\cmd;C:\Users\zeugnst\AppData\Local\Microsoft\WindowsApps;C:\\ProgramData\\Microsoft\\AppV\\Client\\Integration\\E5372EBE-A735-49DA-9EB2-A1B54EE9FBEB\\Root\\RNonStandardPkgs\\TEX\\TinyTeX\\bin\\win32;
+#C:\ProgramData\AppV\602C1D12-9652-4057-A07E-CB0228E7F453\5911E79A-F24E-463B-B533-4FB380847DAE\Root\R\R-4.1.3\bin\x64\R.exe CMD check --as-cran C:\Users\zeugnst\rpackages\BMS\BMS\BMS_0.3.6.tar.gz
+#shell("%ALLUSERSPROFILE%\Microsoft\AppV\Client\Integration\602C1D12-9652-4057-A07E-CB0228E7F453\Root\R\R-4.1.2\bin\x64\R.exe CMD check --as-cran C:\Users\zeugnst\rpackages\BMS\BMS\BMS_0.3.6.tar.gz")
 
 
 # importFrom(stats,density)

@@ -632,7 +632,8 @@
 
 
 
-.post.calc <- function(gprior.info,add.otherstats,k.vec,null.count,X.data,topmods,b1mo,b2mo,iter,burn,inccount,models.visited,K,N,msize,timed,cumsumweights=NA,mcmc="bd",possign=NA) {
+.post.calc <- function(gprior.info,add.otherstats,k.vec,null.count,X.data,topmods,b1mo,b2mo,
+                       iter,burn,inccount,models.visited,K,N,msize,timed,cumsumweights=NA,mcmc="bd",possign=NA,log.mid.lik=0) {
     #customized function for posterior results from bms
     postad.k.vec <- function(k.vec, null.count) c(null.count,k.vec) #concatenates the vector of freqencies for 1:K model sizes with freq for null model
     
@@ -678,7 +679,8 @@
       
       
       info.object=list(iter=iter,burn=burn,inccount=inccount,models.visited=models.visited,b1mo=b1mo,b2mo=b2mo,
-        add.otherstats=add.otherstats,cumsumweights=cumsumweights,K=K,N=N,corr.pmp=corr.pmp,msize=msize,timed=timed,k.vec=k.vec,cons=cons,pos.sign=possign)
+        add.otherstats=add.otherstats,cumsumweights=cumsumweights,K=K,N=N,corr.pmp=corr.pmp,msize=msize,timed=timed,
+        k.vec=k.vec,cons=cons,pos.sign=possign,log.mid.lik=log.mid.lik)
 
       reg.names=postad.reg.names(X.data)
       return(list(info=info.object,k.vec=k.vec,cons=cons,gprior.info=gprior.info,pmp.10=pmp.10,reg.names=reg.names))
